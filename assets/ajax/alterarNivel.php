@@ -1,15 +1,24 @@
-<?php include("config.php");
+<?php require __DIR__ . "/config.php";
 
-$controller = (!empty($nomes_controller[$tabela])) ? $nomes_controller[$tabela] : $tabela;
+$tabela     = $_POST['tabela']     ?? '';
+$nomeCampo  = $_POST['nomeCampo']  ?? '';
+$valorCampo = $_POST['valorCampo'] ?? '';
+$idCampo    = $_POST['idCampo']    ?? '';
+$idnivel    = $_POST['idnivel']    ?? '';
 
-if (!empty($idnivel)) {
-		$query = "UPDATE " . $tabela . " SET " . $nomeCampo . " = '" . $valorCampo . "' WHERE " . $idCampo . " = '" . $idnivel . "'";
-        $rquery = mysql_query($query, $vai);
-		
-		$query2 = "UPDATE usuario SET recarregar = 'sim' WHERE nivel_acesso = '" . $idnivel . "'";
-        $rquery2 = mysql_query($query2, $vai);
-		
-        if(!$rquery) exit();
-}else
-	exit();
+if (empty($idnivel)) exit();
+
+$rquery = atualizar_campo($vai, $campos_permitidos, $tabela, $idCampo, $nomeCampo, $valorCampo, $idnivel);
+
+if ($rquery && is_numeric($idnivel) && $vai) {
+	$stmt = mysqli_prepare($vai, "UPDATE `usuario` SET `recarregar` = 'sim' WHERE `nivel_acesso` = ?");
+	if ($stmt) {
+		$idnivel_int = (int) $idnivel;
+		mysqli_stmt_bind_param($stmt, "i", $idnivel_int);
+		mysqli_stmt_execute($stmt);
+		mysqli_stmt_close($stmt);
+	}
+}
+
+if (!$rquery) exit();
 ?>

@@ -33,12 +33,15 @@ class Acesso extends CI_Controller {
 			$nome_usuario = $this->input->post('login');
 			$senha = cripto($this->input->post('senha'));
 		}else{
-			if($token != '#432!@0*9tpime&first_access!#')
+			// SECURITY: this shared token (an API-key-style credential for
+			// trusted external/JSON clients) was exposed on a public GitHub
+			// repo. Rotate it on any real deployment and update this
+			// constant (real password verification still happens below
+			// regardless of this token).
+			if($token != 'YOUR_API_TOKEN_ROTATE_BEFORE_DEPLOY')
 				$nome_usuario = null;
 		}
 
-		#senha admin: 529617fc278c80e375f9a3a9f20a329f
-		
 		$usuario = $this->acesso_model->get_informacao($nome_usuario)->row();
 
 		if((!empty($usuario->idusuario)) && ($usuario->idusuario > 0)){

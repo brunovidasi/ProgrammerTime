@@ -165,7 +165,7 @@
 			<td><?php echo $usuario->login; ?></td>
 		
 		<td style="min-width: 100px;"><strong title="Data de Nascimento">Data Nasc:</strong></td>
-			<td><?php explode("-",$usuario->data_nascimento); echo fdata($usuario->data_nascimento, "/"); ?></td>
+			<td><?php echo fdata($usuario->data_nascimento, "/"); ?></td>
 		
 		<td style="min-width: 100px;"><strong title="Idade do Usuário">Idade:</strong></td>
 			<td>

@@ -134,7 +134,7 @@ class Licenca extends CI_Controller {
 	    $senha = null;
 
 	    for($i=0; $i < 5; $i++){
-	       $senha .= $caracteres{mt_rand(0, $max)};
+	       $senha .= $caracteres[mt_rand(0, $max)];
 	    }
 
 	    $license_key .= $senha.'-';
@@ -148,7 +148,7 @@ class Licenca extends CI_Controller {
 	    $senha = null;
 
 	    for($i=0; $i < 5; $i++){
-	       $senha .= $caracteres{mt_rand(0, $max)};
+	       $senha .= $caracteres[mt_rand(0, $max)];
 	    }
 
 	    $license_key .= $senha.'-';
@@ -170,7 +170,7 @@ class Licenca extends CI_Controller {
 	    $senha = null;
 
 	    for($i=0; $i < 5; $i++){
-	       $senha .= $caracteres{mt_rand(0, $max)};
+	       $senha .= $caracteres[mt_rand(0, $max)];
 	    }
 
 	    $license_key .= $senha;
@@ -186,7 +186,7 @@ class Licenca extends CI_Controller {
 	    $senha = null;
 
 	    for($i=0; $i < 5; $i++){
-	       $senha .= $caracteres{mt_rand(0, $max)};
+	       $senha .= $caracteres[mt_rand(0, $max)];
 	    }
 
 
@@ -209,21 +209,21 @@ class Licenca extends CI_Controller {
 
 	    $senha = null;
 	    for($i=0; $i < 4; $i++){
-	       $senha .= $caracteres{mt_rand(0, $max)};
+	       $senha .= $caracteres[mt_rand(0, $max)];
 	    }
 
 	    $senha_acesso .= $senha.'_';
 
 	    $senha = null;
 	    for($i=0; $i < 4; $i++){
-	       $senha .= $caracteres{mt_rand(0, $max)};
+	       $senha .= $caracteres[mt_rand(0, $max)];
 	    }
 
 	    $senha_acesso .= $senha.'_';
 
 	    $senha = null;
 	    for($i=0; $i < 4; $i++){
-	       $senha .= $caracteres{mt_rand(0, $max)};
+	       $senha .= $caracteres[mt_rand(0, $max)];
 	    }
 
 	    $senha_acesso .= $senha.'_';

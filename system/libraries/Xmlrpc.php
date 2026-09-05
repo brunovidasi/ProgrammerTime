@@ -245,7 +245,7 @@ class CI_Xmlrpc {
 			}
 			elseif (is_array($value['0']) && ($value['1'] == 'struct' OR $value['1'] == 'array'))
 			{
-				while (list($k) = each($value['0']))
+				foreach (array_keys($value['0']) as $k)
 				{
 					$value['0'][$k] = $this->values_parsing($value['0'][$k], TRUE);
 				}
@@ -507,7 +507,7 @@ class XML_RPC_Response
 		
 		if ($array !== FALSE && is_array($array))
 		{
-			while (list($key) = each($array))
+			foreach (array_keys($array) as $key)
 			{
 				if (is_array($array[$key]))
 				{
@@ -555,7 +555,7 @@ class XML_RPC_Response
 		elseif ($kind == 'array')
 		{
 			reset($xmlrpc_val->me);
-			list($a,$b) = each($xmlrpc_val->me);
+			$b = current($xmlrpc_val->me);
 			$size = count($b);
 
 			$arr = array();
@@ -568,10 +568,9 @@ class XML_RPC_Response
 		}
 		elseif ($kind == 'struct')
 		{
-			reset($xmlrpc_val->me['struct']);
 			$arr = array();
 
-			while (list($key,$value) = each($xmlrpc_val->me['struct']))
+			foreach ($xmlrpc_val->me['struct'] as $key => $value)
 			{
 				$arr[$key] = $this->xmlrpc_decoder($value);
 			}
@@ -1119,7 +1118,7 @@ class XML_RPC_Message extends CI_Xmlrpc
 		
 		if ($array !== FALSE && is_array($array))
 		{
-			while (list($key) = each($array))
+			foreach (array_keys($array) as $key)
 			{
 				if (is_array($array[$key]))
 				{
@@ -1169,7 +1168,7 @@ class XML_RPC_Message extends CI_Xmlrpc
 		elseif ($kind == 'array')
 		{
 			reset($param->me);
-			list($a,$b) = each($param->me);
+			$b = current($param->me);
 
 			$arr = array();
 
@@ -1182,11 +1181,9 @@ class XML_RPC_Message extends CI_Xmlrpc
 		}
 		elseif ($kind == 'struct')
 		{
-			reset($param->me['struct']);
-
 			$arr = array();
 
-			while (list($key,$value) = each($param->me['struct']))
+			foreach ($param->me['struct'] as $key => $value)
 			{
 				$arr[$key] = $this->decode_message($value);
 			}
@@ -1330,8 +1327,7 @@ class XML_RPC_Values extends CI_Xmlrpc
 			case 3:
 				// struct
 				$rs .= "<struct>\n";
-				reset($val);
-				while (list($key2, $val2) = each($val))
+				foreach ($val as $key2 => $val2)
 				{
 					$rs .= "<member>\n<name>{$key2}</name>\n";
 					$rs .= $this->serializeval($val2);
@@ -1381,7 +1377,8 @@ class XML_RPC_Values extends CI_Xmlrpc
 		$ar = $o->me;
 		reset($ar);
 
-		list($typ, $val) = each($ar);
+		$typ = key($ar);
+		$val = current($ar);
 		$rs = "<value>\n".$this->serializedata($typ, $val)."</value>\n";
 		return $rs;
 	}
@@ -1389,8 +1386,7 @@ class XML_RPC_Values extends CI_Xmlrpc
 	function scalarval()
 	{
 		reset($this->me);
-		list($a,$b) = each($this->me);
-		return $b;
+		return current($this->me);
 	}
 
 

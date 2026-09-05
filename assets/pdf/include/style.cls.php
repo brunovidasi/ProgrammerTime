@@ -594,13 +594,13 @@ class Style {
       
     default:
 
-      if ( mb_strlen($colour) == 4 && $colour{0} == "#" ) {
+      if ( mb_strlen($colour) == 4 && $colour[0] == "#" ) {
         // #rgb format
-        $r = hexdec($colour{1} . $colour{1});
-        $g = hexdec($colour{2} . $colour{2});
-        $b = hexdec($colour{3} . $colour{3});
+        $r = hexdec($colour[1] . $colour[1]);
+        $g = hexdec($colour[2] . $colour[2]);
+        $b = hexdec($colour[3] . $colour[3]);
 
-      } else if ( mb_strlen($colour) == 7 && $colour{0} == "#" ) {
+      } else if ( mb_strlen($colour) == 7 && $colour[0] == "#" ) {
         // #rrggbb format
         $r = hexdec(mb_substr($colour, 1, 2));
         $g = hexdec(mb_substr($colour, 3, 2));
@@ -624,7 +624,7 @@ class Style {
         foreach (array_keys($triplet) as $c) {
           $triplet[$c] = trim($triplet[$c]);
           
-          if ( $triplet[$c]{mb_strlen($triplet[$c]) - 1} == "%" ) 
+          if ( $triplet[$c][mb_strlen($triplet[$c]) - 1] == "%" ) 
             $triplet[$c] = round($triplet[$c] * 0.255);
         }
 
@@ -781,10 +781,8 @@ class Style {
     
     // Resolve the font family
     $families = explode(",", $this->_props["font_family"]);
-    reset($families);
     $font = null;
-    while ( current($families) ) {
-      list(,$family) = each($families);
+    foreach ($families as $family) {
       $font = Font_Metrics::get_font($family, $subtype);
 
       if ( $font )

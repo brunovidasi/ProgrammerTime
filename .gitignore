@@ -1,0 +1,21 @@
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editor/IDE
+.vscode/
+.idea/
+*.swp
+
+# CodeIgniter runtime logs and caches
+application/logs/*.php
+application/cache/*
+!application/cache/index.html
+
+# Local environment overrides
+*.local.php
+.env
+
+# Never commit real credentials
+error_log
+*.sql.bak

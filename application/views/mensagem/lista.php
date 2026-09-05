@@ -199,7 +199,7 @@ $(function() {
 
 			var classe_atual = $(this).attr("favorito");
 		    var pag = "<?php echo base_url('mensagem/marcar_como_favorita/'); ?>";
-		    var idmensagem = "<?php echo $mensagem->idmensagem; ?>";
+		    var idmensagem = "<?php echo isset($mensagem) ? $mensagem->idmensagem : ''; ?>";
 
 		    if(classe_atual == "true"){
 		        $(this).attr("class", "glyphicon glyphicon-star-empty");

@@ -810,7 +810,7 @@ var $innerblocktags;
 // **********************************
 // **********************************
 
-function mPDF($mode='',$format='A4',$default_font_size=0,$default_font='',$mgl=15,$mgr=15,$mgt=16,$mgb=16,$mgh=9,$mgf=9, $orientation='P') {
+function __construct($mode='',$format='A4',$default_font_size=0,$default_font='',$mgl=15,$mgr=15,$mgt=16,$mgb=16,$mgh=9,$mgf=9, $orientation='P') {
 
 /*-- BACKGROUNDS --*/
 		if (!class_exists('grad', false)) { include(_MPDF_PATH.'classes/grad.php'); }
@@ -1798,7 +1798,7 @@ function Close() {
 }
 
 /*-- BACKGROUNDS --*/
-function _resizeBackgroundImage($imw, $imh, $cw, $ch, $resize=0, $repx, $repy, $pba=array(), $size=array()) {
+function _resizeBackgroundImage($imw, $imh, $cw, $ch, $resize=0, $repx='', $repy='', $pba=array(), $size=array()) {
 	// pba is background positioning area (from CSS background-origin) may not always be set [x,y,w,h]
 	// size is from CSS3 background-size - takes precendence over old resize 
 	//	$w - absolute length or % or auto or cover | contain
@@ -1978,11 +1978,11 @@ function PrintBodyBackgrounds() {
 
 	if ($this->bodyBackgroundColor) {
 		$s .= 'q ' .$this->SetFColor($this->bodyBackgroundColor, true)."\n";
-		if ($this->bodyBackgroundColor{0}==5) {	// RGBa
-			$s .= $this->SetAlpha(ord($this->bodyBackgroundColor{4})/100, 'Normal', true, 'F')."\n";
+		if ($this->bodyBackgroundColor[0]==5) {	// RGBa
+			$s .= $this->SetAlpha(ord($this->bodyBackgroundColor[4])/100, 'Normal', true, 'F')."\n";
 		}
-		else if ($this->bodyBackgroundColor{0}==6) {	// CMYKa
-			$s .= $this->SetAlpha(ord($this->bodyBackgroundColor{5})/100, 'Normal', true, 'F')."\n";
+		else if ($this->bodyBackgroundColor[0]==6) {	// CMYKa
+			$s .= $this->SetAlpha(ord($this->bodyBackgroundColor[5])/100, 'Normal', true, 'F')."\n";
 		}
 		$s .= sprintf('%.3F %.3F %.3F %.3F re f Q', ($clx*_MPDFK), ($cly*_MPDFK),$clw*_MPDFK,$clh*_MPDFK)."\n";
 	}
@@ -2052,11 +2052,11 @@ function PrintPageBackgrounds($adjustmenty=0) {
 			if (isset($pb['shadow']) && $pb['shadow']) { $s .= $pb['shadow']."\n"; }
 			if (isset($pb['clippath']) && $pb['clippath']) { $s .= $pb['clippath']."\n"; }
 			$s .= 'q '.$this->SetFColor($pb['col'], true)."\n";
-			if ($pb['col']{0}==5) {	// RGBa
-				$s .= $this->SetAlpha(ord($pb['col']{4})/100, 'Normal', true, 'F')."\n"; 
+			if ($pb['col'][0]==5) {	// RGBa
+				$s .= $this->SetAlpha(ord($pb['col'][4])/100, 'Normal', true, 'F')."\n"; 
 			}
-			else if ($pb['col']{0}==6) {	// CMYKa
-				$s .= $this->SetAlpha(ord($pb['col']{5})/100, 'Normal', true, 'F')."\n";
+			else if ($pb['col'][0]==6) {	// CMYKa
+				$s .= $this->SetAlpha(ord($pb['col'][5])/100, 'Normal', true, 'F')."\n";
 			}
 			$s .= sprintf('%.3F %.3F %.3F %.3F re f Q',$pb['x']*_MPDFK,($this->h-$pb['y'])*_MPDFK,$pb['w']*_MPDFK,-$pb['h']*_MPDFK)."\n";
 			if (isset($pb['clippath']) && $pb['clippath']) { $s .= 'Q'."\n"; }
@@ -2234,11 +2234,11 @@ function PrintTableBackgrounds($adjustmenty=0) {
 		foreach ($pbs AS $pb) {
 	 	 if ((!isset($pb['gradient']) || !$pb['gradient']) && (!isset($pb['image_id']) || !$pb['image_id'])) {
 			$s .= 'q '.$this->SetFColor($pb['col'], true)."\n";
-			if ($pb['col']{0}==5) {	// RGBa
-				$s .= $this->SetAlpha(ord($pb['col']{4})/100, 'Normal', true, 'F')."\n"; 
+			if ($pb['col'][0]==5) {	// RGBa
+				$s .= $this->SetAlpha(ord($pb['col'][4])/100, 'Normal', true, 'F')."\n"; 
 			}
-			else if ($pb['col']{0}==6) {	// CMYKa
-				$s .= $this->SetAlpha(ord($pb['col']{5})/100, 'Normal', true, 'F')."\n";
+			else if ($pb['col'][0]==6) {	// CMYKa
+				$s .= $this->SetAlpha(ord($pb['col'][5])/100, 'Normal', true, 'F')."\n";
 			}
 			$s .= sprintf('%.3F %.3F %.3F %.3F re %s Q',$pb['x']*_MPDFK,($this->h-$pb['y'])*_MPDFK,$pb['w']*_MPDFK,-$pb['h']*_MPDFK,'f')."\n";
 		  }
@@ -2852,17 +2852,17 @@ function AddSpotColor($name, $c, $m, $y, $k) {
 function SetColor($col, $type='') {
 	$out = '';
 	if (!$col) { return ''; }	// mPDF 6
-	if ($col{0}==3 || $col{0}==5) {	// RGB / RGBa
-		$out = sprintf('%.3F %.3F %.3F rg',ord($col{1})/255,ord($col{2})/255,ord($col{3})/255);
+	if ($col[0]==3 || $col[0]==5) {	// RGB / RGBa
+		$out = sprintf('%.3F %.3F %.3F rg',ord($col[1])/255,ord($col[2])/255,ord($col[3])/255);
 	}
-	else if ($col{0}==1) {	// GRAYSCALE
-		$out = sprintf('%.3F g',ord($col{1})/255);
+	else if ($col[0]==1) {	// GRAYSCALE
+		$out = sprintf('%.3F g',ord($col[1])/255);
 	}
-	else if ($col{0}==2) {	// SPOT COLOR
-		$out = sprintf('/CS%d cs %.3F scn',ord($col{1}),ord($col{2})/100);
+	else if ($col[0]==2) {	// SPOT COLOR
+		$out = sprintf('/CS%d cs %.3F scn',ord($col[1]),ord($col[2])/100);
 	}
-	else if ($col{0}==4 || $col{0}==6) {	// CMYK / CMYKa
-		$out = sprintf('%.3F %.3F %.3F %.3F k', ord($col{1})/100, ord($col{2})/100, ord($col{3})/100, ord($col{4})/100);
+	else if ($col[0]==4 || $col[0]==6) {	// CMYK / CMYKa
+		$out = sprintf('%.3F %.3F %.3F %.3F k', ord($col[1])/100, ord($col[2])/100, ord($col[3])/100, ord($col[4])/100);
 	}
 	if ($type=='Draw') { $out = strtoupper($out); }	// e.g. rg => RG
 	else if ($type=='CodeOnly') { $out = preg_replace('/\s(rg|g|k)/','',$out); }
@@ -3971,7 +3971,7 @@ function GetJspacing($nc,$ns,$w,$inclCursive,&$cOTLdata) {
 		for($c=0;$c<count($cOTLdata);$c++) {
 			for($i=0;$i<strlen($cOTLdata[$c]['group']);$i++) {
 
-				if ($cOTLdata[$c]['group']{$i}=='S') {
+				if ($cOTLdata[$c]['group'][$i]=='S') {
 					// Save from last word
 					if ($max_kashida_in_word) { 
 						$k_ctr++; 
@@ -4592,14 +4592,14 @@ function Cell($w,$h=0,$txt='',$border=0,$ln=0,$align='',$fill=0,$link='', $curre
 			foreach($this->textshadow AS $ts) {
 					$s .= ' q ';
 					$s .= $this->SetTColor($ts['col'], true)."\n";
-					if ($ts['col']{0}==5 && ord($ts['col']{4})<100) {	// RGBa
-						$s .= $this->SetAlpha(ord($ts['col']{4})/100, 'Normal', true, 'F')."\n"; 
+					if ($ts['col'][0]==5 && ord($ts['col'][4])<100) {	// RGBa
+						$s .= $this->SetAlpha(ord($ts['col'][4])/100, 'Normal', true, 'F')."\n"; 
 					}
-					else if ($ts['col']{0}==6 && ord($ts['col']{5})<100) {	// CMYKa
-						$s .= $this->SetAlpha(ord($ts['col']{5})/100, 'Normal', true, 'F')."\n"; 
+					else if ($ts['col'][0]==6 && ord($ts['col'][5])<100) {	// CMYKa
+						$s .= $this->SetAlpha(ord($ts['col'][5])/100, 'Normal', true, 'F')."\n"; 
 					}
-					else if ($ts['col']{0}==1 && $ts['col']{2}==1 && ord($ts['col']{3})<100) {	// Gray
-						$s .= $this->SetAlpha(ord($ts['col']{3})/100, 'Normal', true, 'F')."\n"; 
+					else if ($ts['col'][0]==1 && $ts['col'][2]==1 && ord($ts['col'][3])<100) {	// Gray
+						$s .= $this->SetAlpha(ord($ts['col'][3])/100, 'Normal', true, 'F')."\n"; 
 					}
 					$s .= sprintf(' 1 0 0 1 %.4F %.4F cm', $ts['x']*_MPDFK, -$ts['y']*_MPDFK)."\n";
 					$s .= $sub;
@@ -4859,7 +4859,7 @@ function applyGPOSpdf($txt, $aix, $x, $y, $OTLdata, $textvar=0 ) {
 
 			// Get YPlacement from next Base character
 			$nextbase = $i+1;
-			while($OTLdata['group']{$nextbase}!='C') { $nextbase++; }
+			while($OTLdata['group'][$nextbase]!='C') { $nextbase++; }
 			if (isset($GPOSinfo[$nextbase]) && isset($GPOSinfo[$nextbase]['YPlacement']) && $GPOSinfo[$nextbase]['YPlacement']) { 
 				$YPlacement = $GPOSinfo[$nextbase]['YPlacement'] * $this->FontSizePt / $this->CurrentFont['unitsPerEm']; 
 			}
@@ -5646,7 +5646,7 @@ function finishFlowingBlock($endofblock=false, $next='') {
 			$lastfontreqstyle=null;
 			$lastfontstyle=null;
 		}
-		if ($blockdir == 'ltr' && strpos($lastfontreqstyle,"I") !== false && strpos($lastfontstyle,"I") === false) {	// Artificial italic
+		if ($blockdir == 'ltr' && strpos((string)$lastfontreqstyle,"I") !== false && strpos((string)$lastfontstyle,"I") === false) {	// Artificial italic
 			$lastitalic = $this->FontSize*0.15*_MPDFK;
 		}
 		else { $lastitalic = 0; }
@@ -7155,7 +7155,7 @@ function WriteFlowingBlock( $s, $sOTLdata) {	// mPDF 5.7.1
 
 		$lastfontreqstyle = (isset($font[count($font)-1]['ReqFontStyle']) ? $font[count($font)-1]['ReqFontStyle'] : '');
 		$lastfontstyle = (isset($font[count($font)-1]['style']) ? $font[count($font)-1]['style'] : '');
-		if ($blockdir == 'ltr' && strpos($lastfontreqstyle,"I") !== false && strpos($lastfontstyle,"I") === false) {	// Artificial italic
+		if ($blockdir == 'ltr' && strpos((string)$lastfontreqstyle,"I") !== false && strpos((string)$lastfontstyle,"I") === false) {	// Artificial italic
 			$lastitalic = $this->FontSize*0.15*_MPDFK;
 		}
 		else { $lastitalic = 0; }
@@ -8873,9 +8873,9 @@ function _putannots() {	// mPDF 5.7.2
 				$annotcolor = ' /C [';
 				if (isset($pl['opt']['c']) AND $pl['opt']['c']) {
 					$col = $pl['opt']['c'];
-					if ($col{0}==3 || $col{0}==5) { $annotcolor .= sprintf("%.3F %.3F %.3F", ord($col{1})/255,ord($col{2})/255,ord($col{3})/255); }
-					else if ($col{0}==1) { $annotcolor .= sprintf("%.3F", ord($col{1})/255); }
-					else if ($col{0}==4 || $col{0}==6) { $annotcolor .= sprintf("%.3F %.3F %.3F %.3F", ord($col{1})/100,ord($col{2})/100,ord($col{3})/100,ord($col{4})/100); }
+					if ($col[0]==3 || $col[0]==5) { $annotcolor .= sprintf("%.3F %.3F %.3F", ord($col[1])/255,ord($col[2])/255,ord($col[3])/255); }
+					else if ($col[0]==1) { $annotcolor .= sprintf("%.3F", ord($col[1])/255); }
+					else if ($col[0]==4 || $col[0]==6) { $annotcolor .= sprintf("%.3F %.3F %.3F %.3F", ord($col[1])/100,ord($col[2])/100,ord($col[3])/100,ord($col[4])/100); }
 					else { $annotcolor .= '1 1 0'; }
 				}
 				else { $annotcolor .= '1 1 0'; }
@@ -9661,8 +9661,7 @@ function _putType0(&$font)
 function _putimages()
 {
 	$filter=($this->compress) ? '/Filter /FlateDecode ' : '';
-	reset($this->images);
-	while(list($file,$info)=each($this->images)) {
+	foreach ($this->images as $file=>$info) {
 		$this->_newobj();
 		$this->images[$file]['n']=$this->n;
 		$this->_out('<</Type /XObject');
@@ -10701,7 +10700,7 @@ function _getImage(&$file, $firsttime=true, $allowvector=true, $orig_srcpath=fal
 							for ($xpx = 0; $xpx < $w; ++$xpx) {
 								$colorindex = imagecolorat($im, $xpx, $ypx);
 								if ($colorindex >= $n) { $alpha = 255; }
-								else { $alpha = ord($transparency{$colorindex}); }	// 0-255
+								else { $alpha = ord($transparency[$colorindex]); }	// 0-255
 								if ($alpha > 0) {
 									imagesetpixel($imgalpha, $xpx, $ypx, $alpha);
 								}
@@ -11153,7 +11152,7 @@ function _convImage(&$data, $colspace, $targetcs, $w, $h, $dpi, $mask, $gamma_co
 						for ($xpx = 0; $xpx < $w; ++$xpx) {
 							$colorindex = imagecolorat($im, $xpx, $ypx);
 							if ($colorindex >= $n) { $alpha = 255; }
-							else { $alpha = ord($transparency{$colorindex}); }	// 0-255
+							else { $alpha = ord($transparency[$colorindex]); }	// 0-255
 							$mimgdata .= chr($alpha);
 						}
 					}
@@ -11456,8 +11455,7 @@ function _imageTypeFromString(&$data) {
 
 // Moved outside WMF as also needed for SVG
 function _putformobjects() {
-	reset($this->formobjects);
-	while(list($file,$info)=each($this->formobjects)) {
+	foreach ($this->formobjects as $file=>$info) {
 		$this->_newobj();
 		$this->formobjects[$file]['n']=$this->n;
 		$this->_out('<</Type /XObject');
@@ -11691,7 +11689,7 @@ function Rotate($angle,$x=-1,$y=-1)
 
 
 
-function CircularText($x, $y, $r, $text, $align='top', $fontfamily='', $fontsize=0, $fontstyle='', $kerning=120, $fontwidth=100, $divider) {
+function CircularText($x, $y, $r, $text, $align='top', $fontfamily='', $fontsize=0, $fontstyle='', $kerning=120, $fontwidth=100, $divider=null) {
 	if (!class_exists('directw', false)) { include(_MPDF_PATH.'classes/directw.php'); }
 	if (empty($this->directw)) { $this->directw = new directw($this); }
 	$this->directw->CircularText($x, $y, $r, $text, $align, $fontfamily, $fontsize, $fontstyle, $kerning, $fontwidth, $divider);
@@ -12100,8 +12098,8 @@ function _computeLineheight($lh, $fs='') {
 	if ($lh == 'N') { 
 		$lh = $this->_getNormalLineheight();
 	}
-	if (preg_match('/mm/',$lh)) { 
-		return (($lh + 0.0) / $k); // convert to number
+	if (preg_match('/mm/',$lh)) {
+		return (((float)$lh) / $k); // convert to number
 	}
 	else if ($lh > 0) { 
 		return ($fs * $lh);
@@ -12137,7 +12135,7 @@ function _setLineYpos(&$fontsize, &$fontdesc, &$CSSlineheight, $blockYpos=false)
 		$lineheight = ($fontsize * $lh); 
 		$leading += $linegap;	// specified in hhea or sTypo in OpenType tables	****************************************
 	}
-	else if (preg_match('/mm/',$CSSlineheight)) { $lineheight = (($CSSlineheight + 0.0) / $shrin_k); }	// convert to number
+	else if (preg_match('/mm/',$CSSlineheight)) { $lineheight = (((float)$CSSlineheight) / $shrin_k); }	// convert to number
 	// ??? If lineheight is a factor e.g. 1.3  ?? use factor x 1em or ? use 'normal' lineheight * factor ******************************
 	// Could depend on value for $text_height - a draft CSS value as set above for now
 	else if ($CSSlineheight > 0) { $lineheight = ($fontsize * $CSSlineheight); }	
@@ -12147,7 +12145,7 @@ function _setLineYpos(&$fontsize, &$fontdesc, &$CSSlineheight, $blockYpos=false)
 	// and add half to the top and half to the bottom. BUT
 	// If an inline element has a font-size less than the block element, and the line-height is set as an em or % value
 	// it will add too much leading below the font and expand the height of the line - so just use the block element exttop/extbottom:
-	if (preg_match('/mm/',$CSSlineheight) && $ypos['boxtop'] < $blockYpos['boxtop'] && $ypos['boxbottom'] > $blockYpos['boxbottom']) { 
+	if (preg_match('/mm/',$CSSlineheight) && is_array($blockYpos) && $ypos['boxtop'] < $blockYpos['boxtop'] && $ypos['boxbottom'] > $blockYpos['boxbottom']) {
 		$ypos['exttop'] = $blockYpos['exttop'];
 		$ypos['extbottom'] = $blockYpos['extbottom'];
 	}
@@ -12704,7 +12702,7 @@ function Header($content='') {
 
 
 /*-- TABLES --*/
-function TableHeaderFooter($content='',$tablestartpage='',$tablestartcolumn ='',$horf = 'H',$level, $firstSpread=true, $finalSpread=true) {
+function TableHeaderFooter($content='',$tablestartpage='',$tablestartcolumn ='',$horf = 'H',$level=0, $firstSpread=true, $finalSpread=true) {
   if(($horf=='H' || $horf=='F') && !empty($content)) {	// mPDF 5.7.2
 	$table = &$this->table[1][1];
 
@@ -14001,7 +13999,7 @@ function WriteHTML($html,$sub=0,$init=true,$close=true) {
 
 		}
 	}
-	$properties = $this->cssmgr->MergeCSS('BLOCK','BODY',''); 
+	$properties = $this->cssmgr->MergeCSS('BLOCK','BODY',array()); 
 	if ($zproperties) { $properties = $this->cssmgr->array_merge_recursive_unique($properties,$zproperties); }
 
 	if (isset($properties['DIRECTION']) && $properties['DIRECTION']) {
@@ -14072,7 +14070,7 @@ function WriteHTML($html,$sub=0,$init=true,$close=true) {
 		$this->bufferoutput = true; 
 		$this->textbuffer=array();
 		$this->headerbuffer='';
-		$properties = $this->cssmgr->MergeCSS('BLOCK','BODY','');
+		$properties = $this->cssmgr->MergeCSS('BLOCK','BODY',array());
 		$this->setCSS($properties,'','BODY'); 
 	} 
 
@@ -14565,7 +14563,7 @@ function WriteHTML($html,$sub=0,$init=true,$close=true) {
 
 /*-- CSS-POSITION --*/
 
-function WriteFixedPosHTML($html='',$x, $y, $w, $h, $overflow='visible', $bounding=array()) {
+function WriteFixedPosHTML($html='',$x=0, $y=0, $w=0, $h=0, $overflow='visible', $bounding=array()) {
 	// $overflow can be 'hidden', 'visible' or 'auto' - 'auto' causes autofit to size
 	// Annotations disabled - enabled in mPDF 5.0
 	// Links do work
@@ -14625,7 +14623,7 @@ function WriteFixedPosHTML($html='',$x, $y, $w, $h, $overflow='visible', $boundi
 
 		$this->blk[0]['blockContext'] = $this->blockContext;
 
-		$properties = $this->cssmgr->MergeCSS('BLOCK','BODY','');
+		$properties = $this->cssmgr->MergeCSS('BLOCK','BODY',array());
 		$this->setCSS($properties,'','BODY'); 
 		$this->blklvl = 1;
 		$this->initialiseBlock($this->blk[1]);
@@ -15366,7 +15364,7 @@ function _borderPadding($a, $b, &$px, &$py) {
 
 
 /*-- CSS-PAGE --*/
-function SetPagedMediaCSS($name='', $first, $oddEven) {
+function SetPagedMediaCSS($name='', $first=false, $oddEven='') {
 	if ($oddEven == 'E') { 
 		if ($this->directionality=='rtl') { $side = 'R'; }
 		else { $side = 'L'; }
@@ -22344,23 +22342,23 @@ function PaintDivBB($divider='',$blockstate=0,$blvl=0) {
 	if (isset($this->blk[$blvl]['box_shadow']) && $this->blk[$blvl]['box_shadow'] && $h > 0) {
 		foreach($this->blk[$blvl]['box_shadow'] AS $sh) {
 			// Colors
-			if ($sh['col']{0}==1) {
+			if ($sh['col'][0]==1) {
 				$colspace = 'Gray';
-				if ($sh['col']{2}==1) { $col1 = '1'.$sh['col'][1].'1'.$sh['col'][3]; }
+				if ($sh['col'][2]==1) { $col1 = '1'.$sh['col'][1].'1'.$sh['col'][3]; }
 				else { $col1 = '1'.$sh['col'][1].'1'.chr(100); }
 				$col2 = '1'.$sh['col'][1].'1'.chr(0);
 			}
-			else if ($sh['col']{0}==4) {	// CMYK
+			else if ($sh['col'][0]==4) {	// CMYK
 				$colspace = 'CMYK';
 				$col1 = '6'.$sh['col'][1].$sh['col'][2].$sh['col'][3].$sh['col'][4].chr(100);
 				$col2 = '6'.$sh['col'][1].$sh['col'][2].$sh['col'][3].$sh['col'][4].chr(0);
 			}
-			else if ($sh['col']{0}==5) {	// RGBa
+			else if ($sh['col'][0]==5) {	// RGBa
 				$colspace = 'RGB';
 				$col1 = '5'.$sh['col'][1].$sh['col'][2].$sh['col'][3].$sh['col'][4];
 				$col2 = '5'.$sh['col'][1].$sh['col'][2].$sh['col'][3].chr(0);
 			}
-			else if ($sh['col']{0}==6) {	// CMYKa
+			else if ($sh['col'][0]==6) {	// CMYKa
 				$colspace = 'CMYK';
 				$col1 = '6'.$sh['col'][1].$sh['col'][2].$sh['col'][3].$sh['col'][4].$sh['col'][5];
 				$col2 = '6'.$sh['col'][1].$sh['col'][2].$sh['col'][3].$sh['col'][4].chr(0);
@@ -22389,14 +22387,14 @@ function PaintDivBB($divider='',$blockstate=0,$blvl=0) {
 			// Set path for INNER shadow
 			$shadow .= ' q 0 w ';
 			$shadow .= $this->SetFColor($col1, true)."\n";
-			if ($col1{0}==5 && ord($col1{4})<100) {	// RGBa
-				$shadow .= $this->SetAlpha(ord($col1{4})/100, 'Normal', true, 'F')."\n"; 
+			if ($col1[0]==5 && ord($col1[4])<100) {	// RGBa
+				$shadow .= $this->SetAlpha(ord($col1[4])/100, 'Normal', true, 'F')."\n"; 
 			}
-			else if ($col1{0}==6 && ord($col1{5})<100) {	// CMYKa
-				$shadow .= $this->SetAlpha(ord($col1{5})/100, 'Normal', true, 'F')."\n"; 
+			else if ($col1[0]==6 && ord($col1[5])<100) {	// CMYKa
+				$shadow .= $this->SetAlpha(ord($col1[5])/100, 'Normal', true, 'F')."\n"; 
 			}
-			else if ($col1{0}==1 && $col1{2}==1 && ord($col1{3})<100) {	// Gray
-				$shadow .= $this->SetAlpha(ord($col1{3})/100, 'Normal', true, 'F')."\n"; 
+			else if ($col1[0]==1 && $col1[2]==1 && ord($col1[3])<100) {	// Gray
+				$shadow .= $this->SetAlpha(ord($col1[3])/100, 'Normal', true, 'F')."\n"; 
 			}
 
 			// Blur edges
@@ -22824,7 +22822,7 @@ function _EllipseArc($x0, $y0, $rx, $ry, $seg = 1, $part=false, $start=false) {	
 
 
 
-function PaintDivLnBorder($state=0,$blvl=0,$h) {
+function PaintDivLnBorder($state=0,$blvl=0,$h=0) {
 	// $state = 0 normal; 1 top; 2 bottom; 3 top and bottom
 	$this->ColDetails[$this->CurrCol]['bottom_margin'] = $this->y + $h; 
 
@@ -23894,7 +23892,7 @@ function DisableTags($str='') {
 
 /*-- TABLES --*/
 
-function TableCheckMinWidth($maxwidth, $forcewrap = 0, $textbuffer, $checkletter=false) {	// mPDF 6
+function TableCheckMinWidth($maxwidth, $forcewrap = 0, $textbuffer=array(), $checkletter=false) {	// mPDF 6
 	$acclength = 0;	// mPDF 6 (accumulated length across > 1 chunk)
 	$acclongest = 0;	// mPDF 6 (accumulated length max across > 1 chunk)
 	$biggestword=0;
@@ -25366,8 +25364,8 @@ function _tableRect($x, $y, $w, $h, $bord=-1, $details=array(), $buffer=false, $
 			// Precedence to darker colours at joins
 			$coldom = 0;
 			if (isset($details[$side]['c']) && is_array($details[$side]['c'])) { 
-				if ($details[$side]['c']{0}==3) { 	// RGB
-					$coldom = 10-(((ord($details[$side]['c']{1})*1.00)+(ord($details[$side]['c']{2})*1.00)+(ord($details[$side]['c']{3})*1.00))/76.5); 
+				if ($details[$side]['c'][0]==3) { 	// RGB
+					$coldom = 10-(((ord($details[$side]['c'][1])*1.00)+(ord($details[$side]['c'][2])*1.00)+(ord($details[$side]['c'][3])*1.00))/76.5); 
 				}
 			} // 10 black - 0 white
 			if ($coldom) { $dom += $coldom; }
@@ -25816,17 +25814,17 @@ function _tableRect($x, $y, $w, $h, $bord=-1, $details=array(), $buffer=false, $
 /*-- TABLES-ADVANCED-BORDERS --*/
 function _lightenColor($c) {
 	if (is_array($c)) { die('Color error in _lightencolor'); }
-	if ($c{0}==3 || $c{0}==5) { 	// RGB
-		list($h,$s,$l) = $this->rgb2hsl(ord($c{1})/255,ord($c{2})/255,ord($c{3})/255);
+	if ($c[0]==3 || $c[0]==5) { 	// RGB
+		list($h,$s,$l) = $this->rgb2hsl(ord($c[1])/255,ord($c[2])/255,ord($c[3])/255);
 		$l += ((1 - $l)*0.8);
 		list($r,$g,$b) = $this->hsl2rgb($h,$s,$l);
 		$ret = array(3,$r,$g,$b);
 	}
-	else if ($c{0}==4 || $c{0}==6) { 	// CMYK
-		$ret = array(4, max(0,(ord($c{1})-20)), max(0,(ord($c{2})-20)), max(0,(ord($c{3})-20)), max(0,(ord($c{4})-20)) );
+	else if ($c[0]==4 || $c[0]==6) { 	// CMYK
+		$ret = array(4, max(0,(ord($c[1])-20)), max(0,(ord($c[2])-20)), max(0,(ord($c[3])-20)), max(0,(ord($c[4])-20)) );
 	}
-	else if ($c{0}==1) {	// Grayscale
-		$ret = array(1,min(255,(ord($c{1})+32)));
+	else if ($c[0]==1) {	// Grayscale
+		$ret = array(1,min(255,(ord($c[1])+32)));
 	}
 	$c = array_pad($ret, 6, 0);
 	$cstr = pack("a1ccccc", $c[0], ($c[1] & 0xFF), ($c[2] & 0xFF), ($c[3] & 0xFF), ($c[4] & 0xFF), ($c[5] & 0xFF) ); 
@@ -25836,18 +25834,18 @@ function _lightenColor($c) {
 
 function _darkenColor($c) {
 	if (is_array($c)) { die('Color error in _darkenColor'); }
-	if ($c{0}==3 || $c{0}==5) { 	// RGB
-		list($h,$s,$l) = $this->rgb2hsl(ord($c{1})/255,ord($c{2})/255,ord($c{3})/255);
+	if ($c[0]==3 || $c[0]==5) { 	// RGB
+		list($h,$s,$l) = $this->rgb2hsl(ord($c[1])/255,ord($c[2])/255,ord($c[3])/255);
 		$s *= 0.25;
 		$l *= 0.75;
 		list($r,$g,$b) = $this->hsl2rgb($h,$s,$l);
 		$ret = array(3,$r,$g,$b);
  	}
-	else if ($c{0}==4 || $c{0}==6) { 	// CMYK
-		$ret = array(4, min(100,(ord($c{1})+20)), min(100,(ord($c{2})+20)), min(100,(ord($c{3})+20)), min(100,(ord($c{4})+20)) );
+	else if ($c[0]==4 || $c[0]==6) { 	// CMYK
+		$ret = array(4, min(100,(ord($c[1])+20)), min(100,(ord($c[2])+20)), min(100,(ord($c[3])+20)), min(100,(ord($c[4])+20)) );
  	}
-	else if ($c{0}==1) {	// Grayscale
-		$ret = array(1,max(0,(ord($c{1})-32)));
+	else if ($c[0]==1) {	// Grayscale
+		$ret = array(1,max(0,(ord($c[1])-32)));
  	}
 	$c = array_pad($ret, 6, 0);
 	$cstr = pack("a1ccccc", $c[0], ($c[1] & 0xFF), ($c[2] & 0xFF), ($c[3] & 0xFF), ($c[4] & 0xFF), ($c[5] & 0xFF) ); 
@@ -28208,10 +28206,9 @@ function _putresources() {
 			foreach($this->tpls as $tplidx => $tpl) {
 				if (isset($tpl['resources'])) {
 					$this->current_parser =& $tpl['parser'];
-					reset ($tpl['resources'][1]);
-					while (list($k, $v) = each($tpl['resources'][1])) {
+					foreach ($tpl['resources'][1] as $k => $v) {
 						if ($k == '/Shading') {
-							while (list($k2, $v2) = each($v[1])) {
+							foreach ($v[1] as $k2 => $v2) {
 								$this->_out($k2 . " ",false);
 								$this->pdf_write_value($v2);
 							}
@@ -28456,7 +28453,7 @@ function _Ovalue($user_pass, $owner_pass) {
 		for ($i = 1; $i <= 19; ++$i) {
 			$key = '';
 			for ($j = 0; $j < $len; ++$j) {
-				$key .= chr(ord($owner_RC4_key{$j}) ^ $i);
+				$key .= chr(ord($owner_RC4_key[$j]) ^ $i);
 			}
 			$enc = $this->_RC4($key, $enc);
 		}
@@ -28473,7 +28470,7 @@ function _Uvalue() {
 		for ($i=1; $i<=19; ++$i) {
 			$key = '';
 			for ($j=0; $j<$len; ++$j) {
-				$key .= chr(ord($this->encryption_key{$j}) ^ $i);
+				$key .= chr(ord($this->encryption_key[$j]) ^ $i);
 			}
 			$enc = $this->_RC4($key, $enc);
 		}
@@ -28492,7 +28489,7 @@ function _generateencryptionkey($user_pass, $owner_pass, $protection) {
 	$owner_pass = substr($owner_pass.$this->padding,0,32);
 	$chars = 'ABCDEF1234567890';
 	$id = '';
-	for ($i=0; $i<32; $i++) { $id .= $chars{rand(0, 15)}; }
+	for ($i=0; $i<32; $i++) { $id .= $chars[rand(0, 15)]; }
 	$this->uniqid = md5($id);
 	// Compute O value
 	$this->Ovalue = $this->_Ovalue($user_pass,$owner_pass);
@@ -28528,7 +28525,7 @@ function _hexToString($hs) {
 		++$len;
 	}
 	for ($i = 0; $i < $len; $i += 2) {
-		$s .= chr(hexdec($hs{$i}.$hs{($i + 1)}));
+		$s .= chr(hexdec($hs[$i].$hs[($i + 1)]));
 	}
 	return $s;
 }
@@ -30495,7 +30492,7 @@ function getBasicOTLdata(&$chunkOTLdata, $unicode, &$is_strong) {
 	}
 }
 
-function _setBidiCodes($mode='start', $bdf) {
+function _setBidiCodes($mode='start', $bdf='') {
 	$s = '';
 	if ($mode=='end') {
 		// PDF comes before PDI to close isolate-override (e.g. "LRILROPDFPDI")
@@ -30882,7 +30879,7 @@ function setHiEntitySubstitutions() {
 function SubstituteHiEntities($html) {
 	// converts html_entities > ASCII 127 to unicode
 	// Leaves in particular &lt; to distinguish from tag marker
-	if (count($this->entsearch)) {
+	if (!empty($this->entsearch)) {
 		$html = str_replace($this->entsearch,$this->entsubstitute,$html);
 	}
 	return $html;
@@ -31889,12 +31886,12 @@ function _invertColor($cor) {
 
 function _colAtoString($cor) {
 	$s = '';
-	if ($cor{0}==1) $s = 'rgb('.ord($cor{1}).','.ord($cor{1}).','.ord($cor{1}).')';
-	else if ($cor{0}==2) $s = 'spot('.ord($cor{1}).','.ord($cor{2}).')';		// SPOT COLOR
-	else if ($cor{0}==3) $s = 'rgb('.ord($cor{1}).','.ord($cor{2}).','.ord($cor{3}).')';
-	else if ($cor{0}==4) $s = 'cmyk('.ord($cor{1}).','.ord($cor{2}).','.ord($cor{3}).','.ord($cor{4}).')';
-	else if ($cor{0}==5) $s = 'rgba('.ord($cor{1}).','.ord($cor{2}).','.ord($cor{3}).','.sprintf('%0.2F',ord($cor{4})/100).')';
-	else if ($cor{0}==6) $s = 'cmyka('.ord($cor{1}).','.ord($cor{2}).','.ord($cor{3}).','.ord($cor{4}).','.sprintf('%0.2F',ord($cor{5})/100).')';
+	if ($cor[0]==1) $s = 'rgb('.ord($cor[1]).','.ord($cor[1]).','.ord($cor[1]).')';
+	else if ($cor[0]==2) $s = 'spot('.ord($cor[1]).','.ord($cor[2]).')';		// SPOT COLOR
+	else if ($cor[0]==3) $s = 'rgb('.ord($cor[1]).','.ord($cor[2]).','.ord($cor[3]).')';
+	else if ($cor[0]==4) $s = 'cmyk('.ord($cor[1]).','.ord($cor[2]).','.ord($cor[3]).','.ord($cor[4]).')';
+	else if ($cor[0]==5) $s = 'rgba('.ord($cor[1]).','.ord($cor[2]).','.ord($cor[3]).','.sprintf('%0.2F',ord($cor[4])/100).')';
+	else if ($cor[0]==6) $s = 'cmyka('.ord($cor[1]).','.ord($cor[2]).','.ord($cor[3]).','.ord($cor[4]).','.sprintf('%0.2F',ord($cor[5])/100).')';
 	return $s;
 }
 
@@ -31907,62 +31904,63 @@ function ConvertSize($size=5,$maxsize=0,$fontsize=false,$usefontsize=true){
 	$size = trim(strtolower($size));
 
   if ( $size == 'thin' ) $size = 1*(25.4/$this->dpi); //1 pixel width for table borders
-  elseif ( stristr($size,'px') ) $size *= (25.4/$this->dpi); //pixels
-  elseif ( stristr($size,'cm') ) $size *= 10; //centimeters
-  elseif ( stristr($size,'mm') ) $size += 0; //millimeters
-  elseif ( stristr($size,'pt') ) $size *= 25.4/72; //72 pts/inch
+  elseif ( stristr($size,'px') ) $size = (float)$size * ((25.4/$this->dpi)); //pixels
+  elseif ( stristr($size,'cm') ) $size = (float)$size * (10); //centimeters
+  elseif ( stristr($size,'mm') ) $size = (float)$size; //millimeters
+  elseif ( stristr($size,'pt') ) $size = (float)$size * (25.4/72); //72 pts/inch
   elseif ( stristr($size,'rem') ) {
-  	$size += 0; //make "0.83rem" become simply "0.83" 
-	$size *= ($this->default_font_size / _MPDFK);
+  	$size = (float)$size; //make "0.83rem" become simply "0.83" 
+	$size = (float)$size * (($this->default_font_size / _MPDFK));
+
   }
   elseif ( stristr($size,'em') ) {
-  	$size += 0; //make "0.83em" become simply "0.83" 
-	if ($fontsize) { $size *= $fontsize; }
-	else { $size *= $maxsize; }
+  	$size = (float)$size; //make "0.83em" become simply "0.83" 
+	if ($fontsize) { $size = (float)$size * ($fontsize); }
+	else { $size = (float)$size * ($maxsize); }
   }
   elseif ( stristr($size,'%') ) {
-  	$size += 0; //make "90%" become simply "90" 
-	if ($fontsize && $usefontsize) { $size *= $fontsize/100; }
-	else { $size *= $maxsize/100; }
+  	$size = (float)$size; //make "90%" become simply "90" 
+	if ($fontsize && $usefontsize) { $size = (float)$size * ($fontsize/100); }
+	else { $size = (float)$size * ($maxsize/100); }
   }
-  elseif ( stristr($size,'in') ) $size *= 25.4; //inches 
-  elseif ( stristr($size,'pc') ) $size *= 38.1/9; //PostScript picas 
+  elseif ( stristr($size,'in') ) $size = (float)$size * (25.4); //inches 
+  elseif ( stristr($size,'pc') ) $size = (float)$size * (38.1/9); //PostScript picas 
   elseif ( stristr($size,'ex') ) {	// Approximates "ex" as half of font height
-  	$size += 0; //make "3.5ex" become simply "3.5" 
-	if ($fontsize) { $size *= $fontsize/2; }
-	else { $size *= $maxsize/2; }
+  	$size = (float)$size; //make "3.5ex" become simply "3.5" 
+	if ($fontsize) { $size = (float)$size * ($fontsize/2); }
+	else { $size = (float)$size * ($maxsize/2); }
   }
   elseif ( $size == 'medium' ) $size = 3*(25.4/$this->dpi); //3 pixel width for table borders
   elseif ( $size == 'thick' ) $size = 5*(25.4/$this->dpi); //5 pixel width for table borders
   elseif ($size == 'xx-small') {
-	if ($fontsize) { $size *= $fontsize*0.7; }
-	else { $size *= $maxsize*0.7; }
+	if ($fontsize) { $size = (float)$size * ($fontsize*0.7); }
+	else { $size = (float)$size * ($maxsize*0.7); }
   }
   elseif ($size == 'x-small') {
-	if ($fontsize) { $size *= $fontsize*0.77; }
-	else { $size *= $maxsize*0.77; }
+	if ($fontsize) { $size = (float)$size * ($fontsize*0.77); }
+	else { $size = (float)$size * ($maxsize*0.77); }
   }
   elseif ($size == 'small') {
-	if ($fontsize) { $size *= $fontsize*0.86; }
-	else { $size *= $maxsize*0.86; }
+	if ($fontsize) { $size = (float)$size * ($fontsize*0.86); }
+	else { $size = (float)$size * ($maxsize*0.86); }
   }
   elseif ($size == 'medium') {
-	if ($fontsize) { $size *= $fontsize; }
-	else { $size *= $maxsize; }
+	if ($fontsize) { $size = (float)$size * ($fontsize); }
+	else { $size = (float)$size * ($maxsize); }
   }
   elseif ($size == 'large') {
-	if ($fontsize) { $size *= $fontsize*1.2; }
-	else { $size *= $maxsize*1.2; }
+	if ($fontsize) { $size = (float)$size * ($fontsize*1.2); }
+	else { $size = (float)$size * ($maxsize*1.2); }
   }
   elseif ($size == 'x-large') {
-	if ($fontsize) { $size *= $fontsize*1.5; }
-	else { $size *= $maxsize*1.5; }
+	if ($fontsize) { $size = (float)$size * ($fontsize*1.5); }
+	else { $size = (float)$size * ($maxsize*1.5); }
   }
   elseif ($size == 'xx-large') {
-	if ($fontsize) { $size *= $fontsize*2; }
-	else { $size *= $maxsize*2; }
+	if ($fontsize) { $size = (float)$size * ($fontsize*2); }
+	else { $size = (float)$size * ($maxsize*2); }
   }
-  else $size *= (25.4/$this->dpi); //nothing == px
+  else $size = (float)$size * ((25.4/$this->dpi)); //nothing == px
   
   return $size;
 }
@@ -32351,8 +32349,7 @@ function pdf_write_value(&$value) {
 		case PDF_TYPE_DICTIONARY :
 			// A dictionary.
 			$this->_out("<<",false);
-			reset ($value[1]);
-			while (list($k, $v) = each($value[1])) {
+			foreach ($value[1] as $k => $v) {
 				$this->_out($k . " ",false);
 				$this->pdf_write_value($v);
 			}

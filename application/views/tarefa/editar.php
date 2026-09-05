@@ -192,7 +192,7 @@ jQuery(document).ready(function($){
 		$("select[name=idprojeto]").html('<option value="0"><?php echo lang("carregando_projetos"); ?></option>');
 		$("#loader_projetos").html("<img src='<?php echo base_url('assets/images/sistema/ajax_loader.gif'); ?>' width='30px'/>");
 		
-		$.post("<?php print base_url('etapa/get_projetos/'.$projeto); ?>", {idcliente:$(this).val()}, function(valor){
+		$.post("<?php print base_url('etapa/get_projetos/'.$tarefa->idprojeto); ?>", {idcliente:$(this).val()}, function(valor){
 			$("select[name=idprojeto]").html(valor);
 			$("#loader_projetos").html("");
 			$("html").css("cursor", "auto");

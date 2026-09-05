@@ -1,12 +1,14 @@
-<?php include("config.php");
+<?php require __DIR__ . "/config.php";
 
-$controller = (!empty($nomes_controller[$tabela])) ? $nomes_controller[$tabela] : $tabela;
+$tabela     = $_POST['tabela']     ?? '';
+$nomeCampo  = $_POST['nomeCampo']  ?? '';
+$valorCampo = $_POST['valorCampo'] ?? '';
+$idCampo    = $_POST['idCampo']    ?? '';
+$idprojeto  = $_POST['idprojeto']  ?? '';
 
-if(!empty($idprojeto)){
-		$query = "UPDATE " . $tabela . " SET " . $nomeCampo . " = '" . $valorCampo . "' WHERE " . $idCampo . " = '" . $idprojeto . "'";
-        $rquery = mysql_query($query, $vai);
-		
-        if(!$rquery) exit();
-}else
-	exit();
+if (empty($idprojeto)) exit();
+
+$rquery = atualizar_campo($vai, $campos_permitidos, $tabela, $idCampo, $nomeCampo, $valorCampo, $idprojeto);
+
+if (!$rquery) exit();
 ?>

@@ -3,20 +3,16 @@
 $active_group = 'default';
 $active_record = TRUE;
 
-# Base de Dados - localhost - VertrigoServ
-// $db['default']['hostname'] = '127.0.0.1';
-// $db['default']['username'] = 'root';
-// $db['default']['password'] = 'vertrigo';
-
-# Base de Dados do Servidor - Bruno
+# Local development database. Update for your own environment;
+# never commit real credentials here.
 $db['default']['hostname'] = 'localhost';
 $db['default']['username'] = 'root';
 $db['default']['password'] = '';
 
 
-# Configurações Gerais de Banco de Dados
+# Configuraï¿½ï¿½es Gerais de Banco de Dados
 $db['default']['database'] = 'brunovid_ptime_sce';
-$db['default']['dbdriver'] = 'mysql';
+$db['default']['dbdriver'] = 'mysqli';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;
 $db['default']['db_debug'] = TRUE;

@@ -49,7 +49,7 @@ var $form_button_icon;
 // FORMS
 var $textarea_lineheight;
 
-function mpdfform(&$mpdf) {
+function __construct(&$mpdf) {
 	$this->mpdf = $mpdf;
 
 	// ACTIVE FORMS
@@ -858,7 +858,7 @@ function SetFormText( $w, $h, $name, $value = '', $default = '', $title = '', $f
 	}
 
 
-	function SetFormSubmit( $w, $h, $name, $value = 'Submit', $url, $title = '', $typ = 'html', $method = 'POST', $flags = array(), $background_col=false, $border_col=false, $noprint=false) {
+	function SetFormSubmit( $w, $h, $name, $value = 'Submit', $url = '', $title = '', $typ = 'html', $method = 'POST', $flags = array(), $background_col=false, $border_col=false, $noprint=false) {
 		if (!$name) { $name = 'Submit'; }
 		$this->SetFormButton( $w, $h, $name, $value, 'submit', $title, $flags, false, false, $background_col, $border_col, $noprint);
 		$this->forms[$this->formn]['URL'] = $url;

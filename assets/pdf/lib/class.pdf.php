@@ -250,7 +250,7 @@ class  Cpdf {
    * this will start a new document
    * @var array array of 4 numbers, defining the bottom left and upper right corner of the page. first two are normally zero.
    */
-  function  Cpdf ($pageSize = array(0, 0, 612, 792)) {
+  function  __construct ($pageSize = array(0, 0, 612, 792)) {
 
     $this->newDocument($pageSize);
 
@@ -2077,7 +2077,7 @@ class  Cpdf {
 
     $xref = array();
 
-    $content = "%PDF-1.3\n%âãÏÓ\n";
+    $content = "%PDF-1.3\n%ï¿½ï¿½ï¿½ï¿½\n";
 
     //  $content="%PDF-1.3\n";
     $pos = strlen($content);
@@ -2529,13 +2529,10 @@ class  Cpdf {
           // load the pfb file, and put that into an object too.
           // note that pdf supports only binary format type 1 font files, though there is a
           // simple utility to convert them from pfa to pfb.
-          $tmp =  get_magic_quotes_runtime();
 
-          set_magic_quotes_runtime(0);
 
           $data =  file_get_contents($fbfile);
 
-          set_magic_quotes_runtime($tmp);
 
 
           // create the font descriptor
@@ -3739,7 +3736,7 @@ class  Cpdf {
       //       }
       //       $i = $i+$directive-1;
       //     } else {
-      $char =  ord($text{$i});
+      $char =  ord($text[$i]);
 
       if  ( isset($this->fonts[$cf]['differences'][$char])) {
 
@@ -4327,9 +4324,7 @@ class  Cpdf {
     // read in a png file, interpret it, then add to the system
     $error =  0;
 
-    $tmp =  get_magic_quotes_runtime();
 
-    set_magic_quotes_runtime(0);
 
     if  ( ($data =  file_get_contents($file)) ===  false) {
 
@@ -4345,7 +4340,6 @@ class  Cpdf {
       $errormsg =  'trouble opening file: '.$file;
     }
 
-    set_magic_quotes_runtime($tmp);
 
 
     if  (!$error) {
@@ -4667,14 +4661,11 @@ class  Cpdf {
 
     //$fp = fopen($img,'rb');
 
-    $tmp =  get_magic_quotes_runtime();
 
-    set_magic_quotes_runtime(0);
 
     $data =  file_get_contents($img);
 
     //fread($fp,filesize($img));
-    set_magic_quotes_runtime($tmp);
 
 
     //fclose($fp);
@@ -4738,9 +4729,7 @@ class  Cpdf {
 
     //$fp = fopen($tmpName,'rb');
 
-    $tmp =  get_magic_quotes_runtime();
 
-    set_magic_quotes_runtime(0);
 
     if  ( ($data =  file_get_contents($tmpName)) ===  false) {
 
@@ -4757,7 +4746,6 @@ class  Cpdf {
     }
 
     //  $data = fread($fp,filesize($tmpName));
-    set_magic_quotes_runtime($tmp);
 
     //  fclose($fp);
     unlink($tmpName);
@@ -4771,7 +4759,7 @@ class  Cpdf {
    *
    * @access private
    */
-  function  addJpegImage_common(&$data, $x, $y, $w =  0, $h =  0, $imageWidth, $imageHeight, $channels =  3) {
+  function  addJpegImage_common(&$data, $x, $y, $w =  0, $h =  0, $imageWidth = 0, $imageHeight = 0, $channels =  3) {
 
     // note that this function is not to be called externally
     // it is just the common code between the GD and the file options

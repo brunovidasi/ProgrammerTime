@@ -21,7 +21,7 @@ if (!function_exists('gera_senha')) {
         $password = "";
 		
         for ($i = 0; $i < $numero_caracteres; $i++) {
-            $password .= $CaracteresAceitos{mt_rand(0, $max)};
+            $password .= $CaracteresAceitos[mt_rand(0, $max)];
         }
 		
         return $password;

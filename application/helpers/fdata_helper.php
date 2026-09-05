@@ -174,7 +174,9 @@ if (!function_exists('semana')) {
 if (!function_exists('tdata')) {
 
     function tdata($data, $abreviado = FALSE) {
-		
+
+		if(empty($data)) return '';
+
 		list($ano,$mes, $dia) = explode('-', $data);
 
 		if($abreviado){

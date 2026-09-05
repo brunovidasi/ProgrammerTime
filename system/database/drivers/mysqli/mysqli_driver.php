@@ -67,6 +67,14 @@ class CI_DB_mysqli_driver extends CI_DB {
 	 */
 	function db_connect()
 	{
+		// PHP 8.1 defaults mysqli to throwing exceptions on error;
+		// restore the classic mysqli_query()-returns-FALSE behaviour
+		// that this driver's error handling (and db_debug) expects.
+		if (function_exists('mysqli_report'))
+		{
+			mysqli_report(MYSQLI_REPORT_OFF);
+		}
+
 		if ($this->port != '')
 		{
 			return @mysqli_connect($this->hostname, $this->username, $this->password, $this->database, $this->port);

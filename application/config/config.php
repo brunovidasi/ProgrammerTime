@@ -26,7 +26,12 @@ $config['log_path'] 			= '';
 $config['log_date_format'] 		= 'Y-m-d H:i:s';
 
 $config['cache_path'] 			= '';
-$config['encryption_key'] 		= 'ziknqwghrdifwher9e7t65794r24xcghg3hdfhfgrladfhgtccestacio';
+// SECURITY: the original key committed here was exposed on a public
+// GitHub repo and used for both session-cookie integrity (Session.php)
+// AND password hashing (cripto_helper.php) -- it must be rotated on any
+// real deployment (this also invalidates existing sessions and requires
+// re-hashing/resetting stored passwords, since they were hashed with it).
+$config['encryption_key'] 		= 'YOUR_ENCRYPTION_KEY_ROTATE_BEFORE_DEPLOY';
 
 $config['sess_cookie_name']		= 'programmer_time';
 $config['sess_expiration']		= 0; # 3600*24*30*12*5 (5 anos)
