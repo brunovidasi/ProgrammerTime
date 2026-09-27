@@ -50,8 +50,8 @@ if (!function_exists('tira_segundos')) {
 	function tira_segundos($hora){
 	
 		if(!empty($hora)){
-			list($h, $i, $s) = explode(':', $hora);
-			return $h.':'.$i;
+			$partes = explode(':', $hora);
+			return $partes[0].':'.(isset($partes[1]) ? $partes[1] : '00');
 		}
 	
 	}

@@ -16,7 +16,7 @@ class Tarefa extends CI_Controller {
 
 		$filtro_status = ($status == 'todos') ? '' : $status;
 
-		$config['base_url']    	= '/tarefa/lista/'.$idusuario.'/'.$idprojeto.'/'.rawurlencode($status).'/';
+		$config['base_url']    	= site_url('tarefa/lista/'.$idusuario.'/'.$idprojeto.'/'.rawurlencode($status)).'/';
 		$config['total_rows'] 	= $this->tarefa_model->get_tarefas($idprojeto, $idusuario, "DESC", 0, 0, $filtro_status, 'numero');
 		$config['per_page']    	= $maximo;
 		$config['uri_segment'] 	= 6;

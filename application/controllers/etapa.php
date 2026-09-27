@@ -122,7 +122,7 @@ class Etapa extends CI_Controller {
 		$inicio = (!$this->uri->segment("3")) ? 0 : $this->uri->segment("3");
 		$maximo = 15;
 		
-		$config['base_url']    	= '/etapa/lista/';
+		$config['base_url']    	= site_url('etapa/lista/');
 		$config['total_rows'] 	= $this->etapa_model->get_etapas_relatorio("", "DESC")->num_rows;
 		$config['per_page']    	= $maximo;
 		$config['uri_segment'] 	= 3;

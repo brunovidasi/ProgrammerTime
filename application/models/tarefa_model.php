@@ -12,12 +12,12 @@ class Tarefa_model extends CI_Model {
 			$dados = new stdClass();
 
 			$dados->idprojeto					= (int) $this->input->post('idprojeto', TRUE);
-			$dados->idfase						= (int) $this->input->post('idfase', TRUE);
+			$dados->idfase						= id_ou_null($this->input->post('idfase', TRUE));
 			$dados->nome						= $this->input->post('nome', TRUE);
 			$dados->descricao					= $this->input->post('descricao');
 			$dados->horas 						= (int) $this->input->post('horas', TRUE);
 			$dados->data_prazo 					= fdata($this->input->post('data', TRUE), "-") . " 00:00:00";
-			$dados->idusuario_responsavel		= (int) $this->input->post('idusuario', TRUE);
+			$dados->idusuario_responsavel		= id_ou_null($this->input->post('idusuario', TRUE));
 			
 			if($method == 'insert'){
 				$dados->status	 				= 'nao_comecado';

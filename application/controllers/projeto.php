@@ -33,7 +33,7 @@ class Projeto extends CI_Controller {
 		$inicio = (!$this->uri->segment("3")) ? 0 : $this->uri->segment("3");
 		$maximo = 15;
 		
-		$config['base_url']   	= '/projeto/lista/';
+		$config['base_url']   	= site_url('projeto/lista/');
 		$config['total_rows']  	= $this->projeto_model->get_projetos($termo)->num_rows;
 		$config['per_page']    	= $maximo;
 		$config['uri_segment'] 	= 3;

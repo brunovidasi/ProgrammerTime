@@ -15,7 +15,7 @@ class Cliente extends CI_Controller {
 		$inicio = (!$this->uri->segment("3")) ? 0 : $this->uri->segment("3");
 		$maximo = 10;
 		
-		$config['base_url']    	= '/cliente/lista/';
+		$config['base_url']    	= site_url('cliente/lista/');
 		$config['total_rows'] 	= $this->cliente_model->get_clientes($termo)->num_rows;
 		$config['per_page']    	= $maximo;
 		$config['uri_segment'] 	= 3;

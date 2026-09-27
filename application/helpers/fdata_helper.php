@@ -41,9 +41,11 @@ if (!function_exists('fdatahora')) {
 		
 		if(!empty($data)){
 			
+			// A DATETIME column can hold a bare date on SQLite (MySQL would have
+			// padded it with 00:00:00), so the time part is optional.
 			$data_completa = explode(" ", $data);
 			$data = $data_completa[0];
-			$hora = $data_completa[1];
+			$hora = isset($data_completa[1]) ? $data_completa[1] : '00:00:00';
 				
 			if ($tipo_transforma == "-") {
 				$parte = explode("/", $data);
@@ -73,9 +75,11 @@ if (!function_exists('fdatetime')) {
 		
 		if(!empty($data)){
 			
+			// A DATETIME column can hold a bare date on SQLite (MySQL would have
+			// padded it with 00:00:00), so the time part is optional.
 			$data_completa = explode(" ", $data);
 			$data = $data_completa[0];
-			$hora = $data_completa[1];
+			$hora = isset($data_completa[1]) ? $data_completa[1] : '00:00:00';
 				
 			if ($tipo_transforma == "-") {
 				$parte = explode("/", $data);

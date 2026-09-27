@@ -11,11 +11,11 @@ class Mensagem_model extends CI_Model {
 		$mensagem = new stdClass();
 		$mensagem->idusuario 		= $idusuario;
 		$mensagem->id_usuario_from 	= $from;
-		$mensagem->idusuario_to 	= $to;
-		$mensagem->idprojeto		= $idprojeto;
+		$mensagem->idusuario_to 	= id_ou_null($to);
+		$mensagem->idprojeto		= id_ou_null($idprojeto);
 		$mensagem->mensagem 		= $msg;
 		$mensagem->assunto 			= $assunto;
-		$mensagem->resposta_de 		= $resposta_de;
+		$mensagem->resposta_de 		= id_ou_null($resposta_de);
 		$mensagem->data_envio		= date('Y-m-d H:i:s');
 		$mensagem->rascunho 		= FALSE;
 		$mensagem->favorito	 		= FALSE;

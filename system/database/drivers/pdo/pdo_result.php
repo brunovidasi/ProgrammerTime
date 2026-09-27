@@ -40,17 +40,25 @@ class CI_DB_pdo_result extends CI_DB_result {
 		{
 			return $this->num_rows;
 		}
-		elseif (($this->num_rows = $this->result_id->rowCount()) > 0)
-		{
-			return $this->num_rows;
-		}
 
-		$this->num_rows = count($this->result_id->fetchAll());
-		$this->result_id->execute();
-		return $this->num_rows;
+		return $this->num_rows = count($this->_rows());
 	}
 
-	// --------------------------------------------------------------------
+	// ProgrammerTime: SQLite (like most PDO drivers) can't count a SELECT's
+	// rows or seek within one, and the stock driver re-executed the statement
+	// to rewind it. The rows are fetched once and served from this buffer.
+	private $_buffer;
+	private $_position = 0;
+
+	private function _rows()
+	{
+		if ($this->_buffer === NULL)
+		{
+			$this->_buffer = is_object($this->result_id) ? $this->result_id->fetchAll(PDO::FETCH_ASSOC) : array();
+		}
+
+		return $this->_buffer;
+	}
 
 	/**
 	 * Number of fields in the result set
@@ -144,7 +152,8 @@ class CI_DB_pdo_result extends CI_DB_result {
 	 */
 	function _data_seek($n = 0)
 	{
-		return FALSE;
+		$this->_position = (int) $n;
+		return TRUE;
 	}
 
 	// --------------------------------------------------------------------
@@ -159,7 +168,8 @@ class CI_DB_pdo_result extends CI_DB_result {
 	 */
 	function _fetch_assoc()
 	{
-		return $this->result_id->fetch(PDO::FETCH_ASSOC);
+		$rows = $this->_rows();
+		return isset($rows[$this->_position]) ? $rows[$this->_position++] : FALSE;
 	}
 
 	// --------------------------------------------------------------------
@@ -173,8 +183,9 @@ class CI_DB_pdo_result extends CI_DB_result {
 	 * @return	object
 	 */
 	function _fetch_object()
-	{	
-		return $this->result_id->fetchObject();
+	{
+		$row = $this->_fetch_assoc();
+		return $row === FALSE ? FALSE : (object) $row;
 	}
 
 }

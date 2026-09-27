@@ -14,8 +14,8 @@ class Etapa_model extends CI_Model {
 	    	if($method == 'insert'){	
 	            $data->idusuario			= $this->input->post('idusuario', TRUE);
 	            $data->idprojeto 	 		= $this->input->post('idprojeto', TRUE);
-	            $data->idtarefa 	 		= $this->input->post('idtarefa', TRUE);
-				$data->idfase 	     		= $this->input->post('idfase', TRUE);
+	            $data->idtarefa 	 		= id_ou_null($this->input->post('idtarefa', TRUE));
+				$data->idfase 	     		= id_ou_null($this->input->post('idfase', TRUE));
 				$data->descricao_tecnica    = $this->input->post('descricao_tecnica', TRUE);
 				$data->descricao_cliente    = $this->input->post('descricao_cliente', TRUE);
 				$data->data          		= fdata($this->input->post('data', TRUE), "-");
@@ -38,8 +38,8 @@ class Etapa_model extends CI_Model {
 	    	if($method == 'edit'){
 	    		$data->idusuario			= $this->input->post('idusuario', TRUE);
 	            $data->idprojeto 	 		= $this->input->post('idprojeto', TRUE);
-	            $data->idtarefa 	 		= $this->input->post('idtarefa', TRUE);
-				$data->idfase 	     		= $this->input->post('idfase', TRUE);
+	            $data->idtarefa 	 		= id_ou_null($this->input->post('idtarefa', TRUE));
+				$data->idfase 	     		= id_ou_null($this->input->post('idfase', TRUE));
 				$data->descricao_tecnica    = $this->input->post('descricao_tecnica', TRUE);
 				$data->descricao_cliente    = $this->input->post('descricao_cliente', TRUE);
 				$data->data          		= fdata($this->input->post('data', TRUE), "-");

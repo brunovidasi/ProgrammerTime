@@ -8,7 +8,7 @@ class Empresa_model extends CI_Model {
 	
 	function post(){
 	    if ($this->input->server('REQUEST_METHOD') == 'POST') {
-            $this->idrepresentante = $this->input->post('idrepresentante', TRUE);
+            $this->idrepresentante = id_ou_null($this->input->post('idrepresentante', TRUE));
             $this->nome = $this->input->post('nome', TRUE);
             $this->razao_social = $this->input->post('razao_social', TRUE);
             $this->cnpj = $this->input->post('cnpj', TRUE);

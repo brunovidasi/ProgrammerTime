@@ -3,20 +3,34 @@
 $active_group = 'default';
 $active_record = TRUE;
 
-# Local development database. Update for your own environment;
-# never commit real credentials here.
-$db['default']['hostname'] = '127.0.0.1';
-$db['default']['username'] = 'root';
-$db['default']['password'] = '';
+# Connection settings come from the instance config
+# (application/config/instance.php); never commit real credentials here.
+#
+# SQLite (the default) is a single file in the instance's data/ directory,
+# created on first run. CodeIgniter 2's own sqlite driver needs the long-gone
+# ext/sqlite, so it goes through the PDO driver instead. 'driver' => 'mysql'
+# in the config uses MySQL/MariaDB with schema.sql.
+$pt_db = pt_config('db');
+
+if ($pt_db['driver'] === 'sqlite') {
+	$db['default']['hostname'] = 'sqlite:'.$pt_db['path'];
+	$db['default']['username'] = '';
+	$db['default']['password'] = '';
+	$db['default']['database'] = '';
+	$db['default']['dbdriver'] = 'pdo';
+} else {
+	$db['default']['hostname'] = $pt_db['hostname'];
+	$db['default']['username'] = $pt_db['username'];
+	$db['default']['password'] = $pt_db['password'];
+	$db['default']['database'] = $pt_db['database'];
+	$db['default']['dbdriver'] = 'mysqli';
+}
 
 
 # Configura��es Gerais de Banco de Dados
-$db['default']['database'] = 'brunovid_ptime_sce';
-$db['default']['dbdriver'] = 'mysqli';
 $db['default']['dbprefix'] = '';
-$db['default']['pconnect'] = TRUE;
-$db['default']['db_debug'] = TRUE;
-//$db['default']['db_debug'] = FALSE;
+$db['default']['pconnect'] = FALSE;
+$db['default']['db_debug'] = ENVIRONMENT !== 'production';
 $db['default']['cache_on'] = FALSE;
 $db['default']['cachedir'] = '';
 $db['default']['char_set'] = 'utf8';

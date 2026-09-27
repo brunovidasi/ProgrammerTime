@@ -13,9 +13,16 @@
 		exit('É impossível executar o Programmer Time em um servidor com a versão do PHP menor que 5.3.28. O ideal é ter instalada uma versão igual ou superior a 5.4.31 do PHP.');
 	
 	setlocale(LC_ALL, "pt_BR", "pt_BR.iso-8859-1", "pt_BR.utf-8", "portuguese");
-	date_default_timezone_set('America/Sao_Paulo');
 
-	define('ENVIRONMENT', 'development');
+	# Environment, timezone, base URL and credentials come from the instance
+	# config (see application/config/instance.php), never from this repo.
+	require __DIR__.'/application/config/instance.php';
+
+	date_default_timezone_set(pt_config('timezone'));
+
+	define('ENVIRONMENT', pt_config('env'));
+
+	if(ENVIRONMENT === 'production') ini_set('display_errors', '0');
 
 	if(defined('ENVIRONMENT')){
 		switch (ENVIRONMENT){

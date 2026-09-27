@@ -14,7 +14,7 @@ class Usuario extends CI_Controller {
 		$inicio = (!$this->uri->segment("3")) ? 0 : $this->uri->segment("3");
 		$maximo = 15;
 		
-		$config['base_url']    	= '/usuario/lista/';
+		$config['base_url']    	= site_url('usuario/lista/');
 		$config['total_rows'] 	= $this->usuario_model->get_usuarios($termo)->num_rows;
 		$config['per_page']    	= $maximo;
 		$config['uri_segment'] 	= 3;
@@ -33,7 +33,7 @@ class Usuario extends CI_Controller {
 		$inicio = (!$this->uri->segment("3")) ? 0 : $this->uri->segment("3");
 		$maximo = 15;
 		
-		$config['base_url']    	= '/usuario/cargo/';
+		$config['base_url']    	= site_url('usuario/cargo/');
 		$config['total_rows'] 	= $this->usuario_model->get_usuarios()->num_rows;
 		$config['per_page']    	= $maximo;
 		$config['uri_segment'] 	= 3;

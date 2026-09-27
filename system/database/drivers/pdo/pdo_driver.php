@@ -94,9 +94,12 @@ class CI_DB_pdo_driver extends CI_DB {
 	 */
 	function db_connect()
 	{
-		$this->options['PDO::ATTR_ERRMODE'] = PDO::ERRMODE_SILENT;
+		// ProgrammerTime: these were string keys ('PDO::ATTR_ERRMODE'), which
+		// PDO ignores, so on PHP 8 (where exceptions are the default) a failed
+		// query threw instead of returning FALSE to CodeIgniter's error handling.
+		$this->options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_SILENT;
 
-		return new PDO($this->hostname, $this->username, $this->password, $this->options);
+		return $this->_init_connection(new PDO($this->hostname, $this->username, $this->password, $this->options));
 	}
 
 	// --------------------------------------------------------------------
@@ -109,10 +112,27 @@ class CI_DB_pdo_driver extends CI_DB {
 	 */
 	function db_pconnect()
 	{
-		$this->options['PDO::ATTR_ERRMODE'] = PDO::ERRMODE_SILENT;
-		$this->options['PDO::ATTR_PERSISTENT'] = TRUE;
-	
-		return new PDO($this->hostname, $this->username, $this->password, $this->options);
+		$this->options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_SILENT;
+		$this->options[PDO::ATTR_PERSISTENT] = TRUE;
+
+		return $this->_init_connection(new PDO($this->hostname, $this->username, $this->password, $this->options));
+	}
+
+	/**
+	 * ProgrammerTime: per-connection SQLite settings. Foreign keys are off by
+	 * default in SQLite; the schema's cascades rely on them, as they did on
+	 * MySQL/InnoDB. The busy timeout makes a concurrent request wait for a
+	 * write lock instead of failing with "database is locked".
+	 */
+	function _init_connection($conn)
+	{
+		if (strpos($this->hostname, 'sqlite:') === 0)
+		{
+			$conn->exec('PRAGMA foreign_keys = ON');
+			$conn->exec('PRAGMA busy_timeout = 5000');
+		}
+
+		return $conn;
 	}
 
 	// --------------------------------------------------------------------
@@ -192,24 +212,20 @@ class CI_DB_pdo_driver extends CI_DB {
 		$sql = $this->_prep_query($sql);
 		$result_id = $this->conn_id->prepare($sql);
 
-		if (is_object($result_id) && ($result = $result_id->execute()))
+		// ProgrammerTime: the stock version returned execute()'s boolean rather
+		// than the statement, and drained every SELECT with fetchAll() just to
+		// count it, so no SELECT ever returned rows. The result class counts
+		// and buffers rows itself (see pdo_result.php).
+		$this->_last_statement = is_object($result_id) ? $result_id : NULL;
+
+		if (is_object($result_id) && $result_id->execute())
 		{
-			if (is_numeric(stripos($sql, 'SELECT')))
-			{
-				$this->affect_rows = count($result_id->fetchAll());
-			}
-			else
-			{
-				$this->affect_rows = $result_id->rowCount();
-			}
-		}
-		else
-		{
-			$this->affect_rows = 0;
-			$result = FALSE;
+			$this->affect_rows = $result_id->rowCount();
+			return $result_id;
 		}
 
-		return $result;
+		$this->affect_rows = 0;
+		return FALSE;
 	}
 
 	// --------------------------------------------------------------------
@@ -490,8 +506,23 @@ class CI_DB_pdo_driver extends CI_DB {
 	 */
 	function _error_message()
 	{
-		$error_array = $this->conn_id->errorInfo();
+		$error_array = $this->_error_source()->errorInfo();
 		return $error_array[2];
+	}
+
+	// ProgrammerTime: a failed execute() records its error on the statement,
+	// not the connection, so the stock version always reported "00000" and
+	// an empty message. A failed prepare() records it on the connection.
+	var $_last_statement;
+
+	function _error_source()
+	{
+		if (is_object($this->_last_statement) && $this->_last_statement->errorCode() !== '00000')
+		{
+			return $this->_last_statement;
+		}
+
+		return $this->conn_id;
 	}
 
 	// --------------------------------------------------------------------
@@ -504,7 +535,7 @@ class CI_DB_pdo_driver extends CI_DB {
 	 */
 	function _error_number()
 	{
-		return $this->conn_id->errorCode();
+		return $this->_error_source()->errorCode();
 	}
 
 	// --------------------------------------------------------------------

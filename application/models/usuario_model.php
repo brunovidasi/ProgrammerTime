@@ -18,7 +18,7 @@ class Usuario_model extends CI_Model {
 			$dados->email		 			= $this->input->post('email', TRUE);
 			$dados->matricula		 		= $this->input->post('matricula', TRUE);
 			$dados->rg		 				= $this->input->post('rg', TRUE);
-			$dados->nivel_acesso	 		= $this->input->post('nivel_acesso', TRUE);
+			$dados->nivel_acesso	 		= id_ou_null($this->input->post('nivel_acesso', TRUE));
 
 			$cpf = $this->input->post('cpf', TRUE);
 			if(!empty($cpf)) $dados->cpf = cpf($cpf);

@@ -31,7 +31,7 @@ foreach($usuarios->result() as $usuario){
 		</a>
 
 		<div class="descricao_usuario">
-			<strong>'. $nome[0] . ' ' . $nome[1].'</strong> <br />
+			<strong>'. $nome[0] . (isset($nome[1]) ? ' ' . $nome[1] : '').'</strong> <br />
 
 			<small title="Último Acesso" style="font-size:12px;">
 				<span title="'. $usuario->numero_acesso .' acessos">

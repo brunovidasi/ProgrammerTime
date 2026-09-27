@@ -6,7 +6,7 @@ client-facing PDF reports. Portuguese UI throughout. Originally built as a
 TCC (undergraduate thesis) project by Bruno Vieira ([@brunovidasi](https://github.com/brunovidasi))
 and Filipe Moreira.
 
-Built on **CodeIgniter 2.2.0** (PHP) with a **MySQL** database, Bootstrap 3 /
+Built on **CodeIgniter 2.2.0** (PHP) with a **SQLite** database (MySQL also supported), Bootstrap 3 /
 AdminLTE-style UI, and PDF export via a bundled copy of **mPDF**.
 
 ## Status
@@ -71,40 +71,107 @@ credential/secret scan.
 
 ## Requirements
 
-- PHP 8.1+ with `mysqli`, `mbstring`, `gd`
-- MySQL or MariaDB
+- PHP 8.1+ with `pdo_sqlite`, `mbstring`, `gd` (`mysqli` instead of
+  `pdo_sqlite` if you use MySQL/MariaDB)
 - A web server with URL rewriting (Apache + `mod_rewrite`, using the bundled
   `.htaccess`)
 
 ## Setup
 
-1. Create the database and load the schema:
+All settings (environment, base URL, timezone, encryption key, admin
+password, database) live in one file, never in the repo. See
+`config.example.php`.
 
-   ```bash
-   mysql -u root < schema.sql
-   ```
+1. Copy `config.example.php` to `config.php` at the project root (gitignored)
+   and set `'env' => 'development'`, `'base_url' => ''` (auto-detected), any
+   `encryption_key`, and an `admin_password`.
 
-   This also seeds a first-login admin account (`login: admin`,
-   `password: admin123`) hashed against the placeholder `encryption_key`
-   that ships in `application/config/config.php`. This is a **local-dev-only**
-   password — change it immediately after first login, and if you change
-   `encryption_key` (step 3) first, regenerate the hash as described in
-   `schema.sql`'s comment before the INSERT, since the two must match.
+2. Point your web server's document root at the project root (so
+   `.htaccess` and `index.php` are at the top level), or mount it in a
+   subfolder: nothing in the app assumes it is at the site root.
 
-2. Set your database credentials in `application/config/database.php`.
+3. Open the app. The SQLite database is created on the first request, in
+   `data/programmertime.sqlite` (gitignored), from `schema.sqlite.sql`; there
+   is no import step. It seeds an `admin` account whose password is
+   `admin_password`, then asks you to create your own account (the app's own
+   first-access screen, open until a second account exists).
 
-3. Set a fresh `encryption_key` in `application/config/config.php` — the
-   committed one was exposed on a public repo (see Security below) and is
-   used for both session-cookie integrity and password hashing, so
-   generate a new one before using this anywhere but a throwaway local copy.
+`timezone` sets the timezone for every date the app shows and records
+(default `Australia/Sydney`); change it in the config file.
 
-4. Point your web server's document root at the project root (so
-   `.htaccess` and `index.php` are at the top level).
+**MySQL instead of SQLite.** Set `'db' => array('driver' => 'mysql', ...)` with
+credentials and load `schema.sql` yourself (`mysql -u root < schema.sql`). Its
+seeded admin has no usable password; set one with
+`UPDATE usuario SET senha = MD5(CONCAT('<encryption_key>', '<password>')) WHERE login = 'admin';`
+(stored passwords are `md5(encryption_key . password)`).
 
-5. Before any real deployment, switch `ENVIRONMENT` in `index.php` from
-   `'development'` to `'production'` (the app's own `leia-me.txt` already
-   said this) — with it left on `development`, every PHP notice/warning is
-   printed inline, which corrupts binary responses like generated PDFs.
+### How SQLite runs on CodeIgniter 2
+
+CodeIgniter 2's own `sqlite` driver needs `ext/sqlite`, which PHP removed in
+5.4, so SQLite goes through the `pdo` driver. That driver had never worked for
+SELECTs and was fixed in `system/database/drivers/pdo/`: it returned
+`execute()`'s boolean instead of the statement, its options used string keys
+PDO ignores (so PHP 8 threw exceptions past CodeIgniter's error handling), and
+it reported errors from the connection rather than the failed statement. Rows
+are now buffered so `num_rows()` and seeking work, and each connection turns
+on `foreign_keys` (the schema's cascades depend on it) and a busy timeout.
+
+Two MySQL behaviours the app relied on are handled in the app itself:
+optional references posted as `''`/`0` are stored as NULL (`id_ou_null()` in
+`sql_helper.php`), and the date helpers accept a bare date in a `DATETIME`
+column, which MySQL would have padded with `00:00:00`.
+
+## Deployment
+
+The app is deployed at `https://app.brunovidasi.com/programmertime` as part of
+the brunovidasi.com website repo (a git subtree at `app/programmertime`), which
+pushes to the server over FTP via GitHub Actions.
+
+### The instance directory
+
+The real config and the database must live **outside** the deployed tree,
+because the repo is public and `public_html` is web-reachable. Create this
+once, by hand, above `public_html`:
+
+```
+/home/<user>/domains/brunovidasi.com/
+├── programmertime-instance/     <- create manually, never deployed
+│   ├── config.php               <- from config.example.php, with 'env' => 'production'
+│   ├── data/                    <- SQLite database (created automatically)
+│   └── logs/                    <- CodeIgniter error logs (created automatically)
+└── public_html/
+    └── app/programmertime/      <- deployed by GitHub Actions
+```
+
+The app finds this folder by walking up the directory tree looking for
+`programmertime-instance`, so no absolute server path is hardcoded anywhere in
+the repo. Set `PROGRAMMERTIME_INSTANCE` to override the location. Until the
+config exists, the app answers every request with "This application is not
+configured yet." It does the same in production if `encryption_key` is shorter
+than 32 characters, or if the database doesn't exist yet and `admin_password`
+is shorter than 8; the reason goes to PHP's error log.
+
+### First deploy
+
+1. Create `programmertime-instance/config.php` from `config.example.php`, with
+   `'env' => 'production'`, a new `encryption_key`
+   (`php -r 'echo bin2hex(random_bytes(32)), "\n";'`) and an `admin_password`.
+2. Push.
+3. Open `https://app.brunovidasi.com/programmertime` straight away: the
+   database is created, and the first-access screen asks for a second account.
+   It is open to anyone until that account exists, so do it immediately.
+4. Log in as `admin`, then remove `admin_password` from the config (it is only
+   read when the database is created).
+5. Make `assets/images/{usuarios,projetos,empresa,temp}` writable by PHP (755,
+   or 775 if uploads fail).
+
+**Backups:** the whole database is `programmertime-instance/data/programmertime.sqlite`.
+Download that file. Never change `encryption_key` afterwards: it salts every
+stored password.
+
+Production hides PHP errors, logs errors only (to the instance `logs/`), and
+marks the session cookie `Secure`. The cookie is scoped to the app's own path,
+so it isn't sent to other apps on the same host.
 
 ## Project layout
 
@@ -127,8 +194,11 @@ Standard CodeIgniter 2 MVC layout:
 - `assets/mpdf/` — vendored mPDF, used by the `relatorio` PDF export.
 - `system/` — CodeIgniter 2.2.0 core, patched only where it broke under
   PHP 8 (see Status above); not upgraded to a newer framework version.
-- `schema.sql` — reconstructed from the model layer; not part of stock
+- `schema.sql` — reconstructed from the model layer (MySQL); not part of stock
   CodeIgniter.
+- `schema.sqlite.sql` — the SQLite port of it, applied automatically on first run.
+- `config.example.php` — template for the per-machine settings file;
+  `application/config/instance.php` finds and loads it.
 
 A couple of stray old files worth knowing about (left in place, not part of
 the working app): `application/controllers/acesso_old_2014_05_20.php` and
@@ -144,7 +214,8 @@ A secret/PII scan was run over the tracked files and full git history
 
 **Rotated/replaced in this pass** (values swapped for placeholders in the
 working tree — see comments at each site):
-- `application/config/config.php`'s `encryption_key` — used for both
+- `application/config/config.php`'s `encryption_key` (now read from the
+  untracked config file) — used for both
   CodeIgniter's session-cookie HMAC and password hashing
   (`cripto_helper.php`). With the old key public, anyone could forge a
   valid session cookie (e.g. set `logado => true`) for any deployment
@@ -153,7 +224,9 @@ working tree — see comments at each site):
 - `config.php` (project root)'s `PT_DB_*`/`DB_*_P` database credentials and
   `PT_LINCENSE_KEY`/`PT_ACCESS_PASS`/`PT_VERIFICATION` licensing secrets.
   Unused by the current app (the license check in `acesso.php` is
-  hardcoded to always pass) but real-looking hosting credentials.
+  hardcoded to always pass) but real-looking hosting credentials. That file
+  has since been removed; `config.php` at the root is now the gitignored
+  local settings file (see Setup).
 - A hardcoded shared token in `acesso.php`'s `logar()`, used as an
   API-key-style check for external/JSON callers.
 
