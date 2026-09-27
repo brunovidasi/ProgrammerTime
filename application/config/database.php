@@ -5,7 +5,7 @@ $active_record = TRUE;
 
 # Local development database. Update for your own environment;
 # never commit real credentials here.
-$db['default']['hostname'] = 'localhost';
+$db['default']['hostname'] = '127.0.0.1';
 $db['default']['username'] = 'root';
 $db['default']['password'] = '';
 
