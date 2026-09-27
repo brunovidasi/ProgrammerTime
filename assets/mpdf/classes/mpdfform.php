@@ -1,5 +1,6 @@
 <?php
 
+#[\AllowDynamicProperties]
 class mpdfform {
 
 var $mpdf = null;

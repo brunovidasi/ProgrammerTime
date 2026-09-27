@@ -6,7 +6,7 @@ if (!defined('BASEPATH'))
 if (!function_exists('moeda')) {
 
 	function moeda($moeda, $prefixo = "R$ "){
-		return $prefixo . number_format($moeda, 2, ',', '.');
+		return $prefixo . number_format(is_numeric($moeda) ? (float) $moeda : 0, 2, ',', '.');
 	}
 
 }

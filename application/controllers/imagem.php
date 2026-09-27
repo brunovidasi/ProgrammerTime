@@ -85,7 +85,7 @@ class Imagem extends CI_Controller {
 		$this->visualizar();
 	}
 	
-	public function atualizar_imagem($idimagem){
+	public function atualizar_imagem($idimagem = 0){
         if (!empty($idimagem)) {
 			if ($this->valida_form_imagem()){
 				

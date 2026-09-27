@@ -69,6 +69,8 @@ class Imagem_model extends CI_Model {
 	}
 	
 	function get_imagem($id){
+		$id = (int) $id;
+
 		$sql = "SELECT 	
 					I.*,
 					P.nome as nome_projeto,
@@ -87,12 +89,16 @@ class Imagem_model extends CI_Model {
 	}
 	
 	function get_imagens($idprojeto){
+		$idprojeto = (int) $idprojeto;
+
 		$sql = "SELECT * FROM projeto_imagem WHERE idprojeto = '{$idprojeto}' ORDER BY data DESC, idimagem DESC";
 		
 		return $this->db->query($sql);
 	}
 	
 	function get_comentarios($idimagem){
+		$idimagem = (int) $idimagem;
+
 		$sql = "SELECT 	
 					C.*, 
 					U.nome as nome, 
@@ -133,6 +139,8 @@ class Imagem_model extends CI_Model {
 	}
 	
 	function retorna_imagens($idprojeto){
+		$idprojeto = (int) $idprojeto;
+
 		$this->db->select('*');
 		$this->db->from('projeto_imagem');
 		$this->db->where("idprojeto", $idprojeto);	

@@ -1,6 +1,7 @@
 <?php
 
 
+#[\AllowDynamicProperties]
 class SEA {
 
 // South East Asian shaper

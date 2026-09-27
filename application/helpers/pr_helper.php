@@ -8,7 +8,6 @@ if (!function_exists('pr')) {
         ?>
         <div>
             <?php
-            $label = utf8_encode($label);
             echo "{$label}";
             if (!empty($var)) {
                 echo ": <pre>";
@@ -24,10 +23,7 @@ if (!function_exists('pr')) {
 if (!function_exists('pexit')) {
 
     function pexit($var, $label = "Teste Array - Objeto", $local = '') {
-        $label = utf8_decode($label);
-        $local = utf8_decode($local);
-
-        pr($label, $var);
+        pr($var, $label);
         echo '<hr />';
         exit($local);
     }

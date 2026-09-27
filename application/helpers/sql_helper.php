@@ -9,10 +9,8 @@ if (!function_exists('strsql')) {
 
 		if(empty($string)) return "";
 
-		$string = str_replace("'", "\'", $string);
-
 		$CI =& get_instance();
-		$string = mysqli_real_escape_string($CI->db->conn_id, $string);
+		$string = $CI->db->escape_str((string) $string);
 
 		return $string;
 	}

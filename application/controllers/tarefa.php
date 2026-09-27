@@ -6,21 +6,26 @@ class Tarefa extends CI_Controller {
 		$this->lista();
 	}
 	
-	public function lista($idusuario = 0, $idprojeto = 0, $status = ""){
+	public function lista($idusuario = 0, $idprojeto = 0, $status = "todos", $inicio = 0){
 
-		$inicio = (!$this->uri->segment("5")) ? 0 : $this->uri->segment("3");
-		$maximo = 15;
-		
-		$config['base_url']    	= '/tarefa/lista/';
-		$config['total_rows'] 	= $this->tarefa_model->get_tarefas($idprojeto, $idusuario, "DESC", 0, 0, $status, 'numero');
+		// URL: /tarefa/lista/{idusuario}/{idprojeto}/{status}/{offset}
+		$idusuario	= (int) $idusuario;
+		$idprojeto	= (int) $idprojeto;
+		$inicio		= (int) $inicio;
+		$maximo		= 15;
+
+		$filtro_status = ($status == 'todos') ? '' : $status;
+
+		$config['base_url']    	= '/tarefa/lista/'.$idusuario.'/'.$idprojeto.'/'.rawurlencode($status).'/';
+		$config['total_rows'] 	= $this->tarefa_model->get_tarefas($idprojeto, $idusuario, "DESC", 0, 0, $filtro_status, 'numero');
 		$config['per_page']    	= $maximo;
-		$config['uri_segment'] 	= 3;
+		$config['uri_segment'] 	= 6;
 		
 		$this->pagination->initialize($config);
 		
 		$dados["paginacao"]    		= $this->pagination->create_links();
 		$dados['tarefas_numero']	= $config['total_rows'];
-		$dados['tarefas']			= $this->tarefa_model->get_tarefas($idprojeto, $idusuario, "DESC", $maximo, $inicio, $status, 'resultado');
+		$dados['tarefas']			= $this->tarefa_model->get_tarefas($idprojeto, $idusuario, "DESC", $maximo, $inicio, $filtro_status, 'resultado');
 
 		$dados['idusuario']			= $idusuario;
 		$dados['idprojeto']			= $idprojeto;
@@ -109,7 +114,7 @@ class Tarefa extends CI_Controller {
 		$this->load->view('includes/interna', $dados);
 	}
 
-	public function editar($idtarefa){
+	public function editar($idtarefa = null){
 
 		if(empty($idtarefa)){
 			$this->session->set_flashdata('mensagem_atencao', lang('msg_tarefa_inexistente'));
@@ -151,7 +156,7 @@ class Tarefa extends CI_Controller {
 		$this->cadastrar();
     }
 
-    public function update($id){
+    public function update($id = null){
 
         if(!empty($id)){
 			if($this->valida_form('update', $id)){
@@ -171,7 +176,7 @@ class Tarefa extends CI_Controller {
 	    redirect('/tarefa/');
 	}
 
-	public function delete($idtarefa){
+	public function delete($idtarefa = 0){
 		$excluido = $this->tarefa_model->delete($idtarefa);
 		
 		if($excluido)

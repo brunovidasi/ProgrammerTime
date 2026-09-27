@@ -42,6 +42,7 @@
 //               info@tecnick.com
 //============================================================+
 
+#[\AllowDynamicProperties]
 class PDFBarcode {
 	
 	protected $barcode_array;

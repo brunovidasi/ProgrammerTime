@@ -80,6 +80,8 @@ class Projeto_model extends CI_Model {
 	}
 	
 	function get_projeto($idprojeto){
+		$idprojeto = (int) $idprojeto;
+
 
 		$sql = "SELECT 	
 					P.*, 
@@ -127,6 +129,9 @@ class Projeto_model extends CI_Model {
 	}
 	
 	function get_projetos_lista($maximo, $inicio, $termo = ""){
+		$maximo = (int) $maximo;
+		$inicio = (int) $inicio;
+
 
 		$termo = strsql($termo);
 
@@ -167,6 +172,8 @@ class Projeto_model extends CI_Model {
 	}
 	
 	function get_projetos_cliente($id){
+		$id = (int) $id;
+
 
 		$sql = "SELECT * FROM 
 					projeto
@@ -179,6 +186,10 @@ class Projeto_model extends CI_Model {
 	}
 	
 	function get_projetos_cliente_lista($maximo, $inicio, $id){
+		$maximo = (int) $maximo;
+		$inicio = (int) $inicio;
+		$id = (int) $id;
+
 
 		$sql = "SELECT 	
 					P.*, 
@@ -265,12 +276,16 @@ class Projeto_model extends CI_Model {
 	}
 	
 	function retorna_imagens($idprojeto){
+		$idprojeto = (int) $idprojeto;
+
 		$sql = "SELECT * FROM projeto_imagem WHERE idprojeto = {$idprojeto}";
 
 		return $this->db->query($sql);
 	}
 	
 	function get_usuarios_envolvidos($idprojeto){
+		$idprojeto = (int) $idprojeto;
+
 		
 		$etapas_do_projeto = $this->db->query("SELECT * FROM projeto_tarefa_hora WHERE idprojeto = '{$idprojeto}' ORDER BY data DESC, inicio DESC, idetapa DESC");
 		
@@ -307,6 +322,8 @@ class Projeto_model extends CI_Model {
 	}
 	
 	function get_projetos_por_etapas($idprojeto){
+		$idprojeto = (int) $idprojeto;
+
 
 		$etapas_do_projeto = $this->db->query("SELECT * FROM projeto_tarefa_hora WHERE idprojeto = '{$idprojeto}' ORDER BY data DESC, inicio DESC, idetapa DESC");
 		

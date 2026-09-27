@@ -18,6 +18,8 @@ class Ajuda_model extends CI_Model {
 	}
 	
 	function get_ajuda($idajuda = 0){
+		$idajuda = (int) $idajuda;
+
 		$sql = "SELECT * FROM ajuda WHERE idajuda = {$idajuda}";
 		
 		return $this->db->query($sql);

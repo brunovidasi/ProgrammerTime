@@ -43,7 +43,7 @@ class Ajuda extends CI_Controller {
 		$this->cadastrar();		
     }
 	
-	function update($id){
+	function update($id = 0){
         if (!empty($id)) {
 			if ($this->valida_form()) {
 				
@@ -62,7 +62,7 @@ class Ajuda extends CI_Controller {
 	    }
 	}
 	
-	function delete($idajuda){
+	function delete($idajuda = 0){
 		$excluido = $this->ajuda_model->delete($idajuda);
 		
 		if ($excluido){

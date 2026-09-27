@@ -55,12 +55,16 @@ class Financeiro_model extends CI_Model {
 	}
 	
 	function get_financeiro($idfinanceiro){
+		$idfinanceiro = (int) $idfinanceiro;
+
 		$sql = "SELECT * FROM projeto_financeiro WHERE idfinanceiro='{$idfinanceiro}' LIMIT 1";
 		
 		return $this->db->query($sql);
 	}
 
 	function get_financeiro_projeto($idprojeto){
+		$idprojeto = (int) $idprojeto;
+
 		$sql = "SELECT * FROM projeto_financeiro WHERE idprojeto='{$idprojeto}' ORDER BY data_cobrado ASC, data_pago ASC";
 		
 		return $this->db->query($sql);
@@ -128,9 +132,11 @@ class Financeiro_model extends CI_Model {
 	}
 
 	function get_id_cliente($idprojeto){
+		$idprojeto = (int) $idprojeto;
+
 		$projeto = $this->db->query("SELECT idcliente FROM projeto WHERE idprojeto='{$idprojeto}'")->row();
 
-		return $projeto->idcliente;
+		return empty($projeto) ? NULL : $projeto->idcliente;
 	}
 	
 }

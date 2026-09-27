@@ -46,46 +46,14 @@ class Acesso extends CI_Controller {
 
 		if((!empty($usuario->idusuario)) && ($usuario->idusuario > 0)){
 			if(($senha == $usuario->senha) && ($usuario->status == 'ativo')){
-				$navegador = $this->verificar_navegador();
-				
-				$usuario_data = array(
-					'nome'			=> fnome($usuario->nome, 0),
-					'nome_duplo'	=> fnome($usuario->nome, 1),
-					'nome_completo'	=> $usuario->nome,
-					'id'			=> $usuario->idusuario,
-					'login'			=> $usuario->login,
-					'email'			=> $usuario->email,
-					'imagem'		=> $usuario->imagem,
-					'numero_acesso'	=> $usuario->numero_acesso,
-					'nivel_acesso'	=> $usuario->nivel_acesso,
-					'status'		=> $usuario->status,
-					'cor'			=> $usuario->cor,
-					'confirmado'	=> $usuario->usuario_confirmado,
-					'matricula'		=> $usuario->matricula,
-					'email_senha'	=> $usuario->email_senha,
-					'navegador'		=> $navegador,
-					'logado'		=> TRUE,
-					'bloqueado'		=> FALSE
-				);
-				
-				$this->session->set_userdata($usuario_data);
-				$this->session->set_userdata("usuario", $usuario);
-
-				$this->session->set_flashdata("logou", TRUE);
-			
-				$this->acesso_model->log($usuario->numero_acesso, $usuario->idusuario);
-				$this->acesso_model->nivel_acesso($usuario->nivel_acesso);
-				
-				if($usuario->numero_acesso == 1) redirect('/usuario/editar/');
-				elseif($usuario->usuario_confirmado == 'nao') redirect('/usuario/visualizar/');
-				else redirect('/dashboard/');
+				$this->iniciar_sessao($usuario);
 				
 			}else{
 				
 				if(($usuario->status == 'inativo') && ($senha == $usuario->senha)){
 					$this->session->set_flashdata('mensagem', lang('msg_entre_em_contato_adm'));
 					$this->session->set_flashdata('controle', 'usuario_inativo');
-					$this->enviar_email->inativo($email, "contato@programmertime.com", $usuario->nome, $usuario->login);
+					$this->enviar_email->inativo($usuario->email, "contato@programmertime.com", $usuario->nome, $usuario->login);
 				}else{
 					$this->session->set_flashdata('controle', 'senha_incorreta');
 					$this->session->set_flashdata('login', $usuario->login);
@@ -96,6 +64,43 @@ class Acesso extends CI_Controller {
 			$this->session->set_flashdata('controle', 'usuario_incorreto');
 			redirect('/acesso/');
 		}
+	}
+
+	// Starts the session for an already-authenticated user and redirects.
+	private function iniciar_sessao($usuario){
+		$navegador = $this->verificar_navegador();
+		
+		$usuario_data = array(
+			'nome'			=> fnome($usuario->nome, 0),
+			'nome_duplo'	=> fnome($usuario->nome, 1),
+			'nome_completo'	=> $usuario->nome,
+			'id'			=> $usuario->idusuario,
+			'login'			=> $usuario->login,
+			'email'			=> $usuario->email,
+			'imagem'		=> $usuario->imagem,
+			'numero_acesso'	=> $usuario->numero_acesso,
+			'nivel_acesso'	=> $usuario->nivel_acesso,
+			'status'		=> $usuario->status,
+			'cor'			=> $usuario->cor,
+			'confirmado'	=> $usuario->usuario_confirmado,
+			'matricula'		=> $usuario->matricula,
+			'email_senha'	=> $usuario->email_senha,
+			'navegador'		=> $navegador,
+			'logado'		=> TRUE,
+			'bloqueado'		=> FALSE
+		);
+		
+		$this->session->set_userdata($usuario_data);
+		$this->session->set_userdata("usuario", $usuario);
+
+		$this->session->set_flashdata("logou", TRUE);
+			
+		$this->acesso_model->log($usuario->numero_acesso, $usuario->idusuario);
+		$this->acesso_model->nivel_acesso($usuario->nivel_acesso);
+		
+		if($usuario->numero_acesso == 1) redirect('/usuario/editar/');
+		elseif($usuario->usuario_confirmado == 'nao') redirect('/usuario/visualizar/');
+		else redirect('/dashboard/');
 	}
 	
 	public function primeira_vez(){
@@ -117,8 +122,8 @@ class Acesso extends CI_Controller {
 				$idinsert = $this->usuario_model->insert($dados);
 				
 				if($idinsert > 0){
-					$usuario = $this->usuario_model->get_usuario($idinsert)->row();
-					$this->logar($usuario->login, $usuario->senha, '#432!@0*9tpime&first_access!#');
+					$usuario = $this->acesso_model->get_informacao_id($idinsert)->row();
+					$this->iniciar_sessao($usuario);
 				}else{
 					$this->session->set_flashdata('mensagem_erro', lang('msg_usuario_nao_cadastrado'));
 					redirect('/acesso/primeira_vez/');
@@ -144,7 +149,7 @@ class Acesso extends CI_Controller {
 	}
 	
 	private function verificar_navegador(){
-		$useragent = $_SERVER['HTTP_USER_AGENT'];
+		$useragent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
 		$navegador = new stdClass();
 	
 		if (preg_match('|MSIE ([0-9].[0-9]{1,2})|',$useragent,$matched)){
@@ -175,7 +180,7 @@ class Acesso extends CI_Controller {
 		return $navegador;
 	}
 	
-	public function confirma_email($senha){
+	public function confirma_email($senha = ''){
 		
 		$id = (int) $this->usuario_model->get_senha_email($senha);
 
@@ -206,7 +211,7 @@ class Acesso extends CI_Controller {
 		$senha = cripto($this->input->post('senha'));
 		$usuario = $this->acesso_model->get_informacao($this->session->userdata('login'))->row();
 
-		if($senha != $usuario->senha){
+		if(empty($usuario) || $senha != $usuario->senha){
 			$this->session->set_flashdata('mensagem', lang('senha_incorreta'));
 			redirect('/acesso/bloquear/');
 		}

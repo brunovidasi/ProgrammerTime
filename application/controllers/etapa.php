@@ -193,7 +193,7 @@ class Etapa extends CI_Controller {
 	    }
 	}
 	
-	public function delete($idetapa){
+	public function delete($idetapa = 0){
 		$excluido = $this->etapa_model->delete($idetapa);
 		
 		if($excluido){
@@ -259,12 +259,14 @@ class Etapa extends CI_Controller {
 	}
 	
 	public function valida_data(){
-		$data = $this->input->post('data');
-		list($d, $m, $y) = explode("/",$data);
-		
-		$valida = checkdate($m, $d, $y);
-		
-		if($valida != 1){
+		$data = (string) $this->input->post('data');
+
+		// checkdate() throws a TypeError on non-numeric parts in PHP 8
+		$valida = FALSE;
+		if(preg_match('#^(\d{1,2})/(\d{1,2})/(\d{4})$#', $data, $partes))
+			$valida = checkdate((int) $partes[2], (int) $partes[1], (int) $partes[3]);
+
+		if(!$valida){
 			$this->form_validation->set_message('valida_data', lang('msg_data_invalida'));
 			return FALSE;
 		}

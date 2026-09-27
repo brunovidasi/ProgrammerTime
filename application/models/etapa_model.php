@@ -87,6 +87,8 @@ class Etapa_model extends CI_Model {
 	}
 	
 	function etapa_aberta($id){
+		$id = (int) $id;
+
 	    $sql = "SELECT 	
 	    			PE.*,
 					PEF.fase as fase,
@@ -112,12 +114,16 @@ class Etapa_model extends CI_Model {
 	}
 	
 	function get_etapa($idetapa){
+		$idetapa = (int) $idetapa;
+
 		$sql = "SELECT * FROM projeto_tarefa_hora WHERE idetapa='{$idetapa}' LIMIT 1";
 		
 		return $this->db->query($sql);
 	}
 	
 	function get_etapas($idprojeto=""){
+		$idprojeto = (int) $idprojeto;
+
 		if(!empty($idprojeto))
 			$sql = "SELECT 	
 					PE.*,
@@ -143,6 +149,11 @@ class Etapa_model extends CI_Model {
 	}
 	
 	function get_etapas_relatorio($idprojeto="", $order="ASC", $maximo="", $inicio="", $andamento=FALSE){
+		$idprojeto = (int) $idprojeto;
+		$order = (strtoupper((string) $order) == 'DESC') ? 'DESC' : 'ASC';
+		$maximo = (int) $maximo;
+		$inicio = (int) $inicio;
+
 		$limit = "";
 		$where = "";
 		
@@ -176,6 +187,8 @@ class Etapa_model extends CI_Model {
 	}
 
 	function get_etapa_relatorio($idetapa = NULL){
+		$idetapa = (int) $idetapa;
+
 		
 		$sql = "SELECT 	
 					PE.*,
@@ -199,12 +212,21 @@ class Etapa_model extends CI_Model {
 	}
 	
 	function get_etapas_usuario($idprojeto, $idusuario, $idfase){
+		$idprojeto = (int) $idprojeto;
+		$idusuario = (int) $idusuario;
+		$idfase = (int) $idfase;
+
 		$sql = "SELECT 	*FROM projeto_tarefa_hora WHERE ((idprojeto = '{$idprojeto}') AND (idusuario = '{$idusuario}') AND (idfase = '{$idfase}'))";
 		
 		return $this->db->query($sql);
 	}
 	
 	function get_etapas_andamento($idprojeto="", $order="ASC", $maximo="", $inicio=""){
+		$idprojeto = (int) $idprojeto;
+		$order = (strtoupper((string) $order) == 'DESC') ? 'DESC' : 'ASC';
+		$maximo = (int) $maximo;
+		$inicio = (int) $inicio;
+
 		
 		if(!empty($idprojeto)){
 			$where = "WHERE idprojeto='{$idprojeto}'";
@@ -237,6 +259,10 @@ class Etapa_model extends CI_Model {
 	}
 	
 	function get_informacoes_usuario($idprojeto, $idusuario, $idfase){
+		$idprojeto = (int) $idprojeto;
+		$idusuario = (int) $idusuario;
+		$idfase = (int) $idfase;
+
 	
 		$sql = "SELECT 	
 					PE.*,
@@ -262,15 +288,19 @@ class Etapa_model extends CI_Model {
 	}
 	
 	function get_id_usuario($idprojeto){
+		$idprojeto = (int) $idprojeto;
+
 		$sql = "SELECT * FROM projeto_tarefa_hora WHERE idprojeto='{$idprojeto}'";
 		
 		return $this->db->query($sql);
 	}
 	
 	function get_id_cliente($idprojeto){
+		$idprojeto = (int) $idprojeto;
+
 		$projeto = $this->db->query("SELECT idcliente FROM projeto WHERE idprojeto='{$idprojeto}'")->row();
 
-		return $projeto->idcliente;
+		return empty($projeto) ? NULL : $projeto->idcliente;
 	}
 	
 	function get_fases(){
@@ -280,18 +310,24 @@ class Etapa_model extends CI_Model {
 	}
 	
 	function get_fase($id){
+		$id = (int) $id;
+
 		$sql = "SELECT * FROM projeto_fase WHERE idfase='{$id}'";
 		
 		return $this->db->query($sql);
 	}
 	
 	function get_cliente($idcliente){
+		$idcliente = (int) $idcliente;
+
 		$sql = "SELECT * FROM cliente WHERE idcliente='{$idcliente}' LIMIT 1";
 		
 		return $this->db->query($sql);
 	}
 	
 	function get_projeto_cliente($idcliente){
+		$idcliente = (int) $idcliente;
+
 		$sql = "SELECT 
 					* 
 				FROM 
@@ -311,6 +347,8 @@ class Etapa_model extends CI_Model {
 	}
 	
 	function get_projeto_tarefa_hora($idprojeto){
+		$idprojeto = (int) $idprojeto;
+
 		$sql = "SELECT * FROM projeto WHERE idprojeto='{$idprojeto}'";
 		
 		return $this->db->query($sql);

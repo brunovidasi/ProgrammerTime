@@ -9,6 +9,7 @@ define("_DICT_FINAL_MATCH", 0x04);
 
 
 
+#[\AllowDynamicProperties]
 class otl {
 
 var $mpdf;

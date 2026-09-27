@@ -24,6 +24,7 @@
  * @link		http://www.codeigniter.com/user_guide/libraries/javascript.html
  */
 
+#[\AllowDynamicProperties]
 class CI_Jquery extends CI_Javascript {
 
 	var $_javascript_folder = 'js';

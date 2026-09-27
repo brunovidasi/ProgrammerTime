@@ -79,14 +79,14 @@ class Mensagem extends CI_Controller {
 	}
 
 	function marcar_como_favorita(){
-		$this->mensagem_model->marcar_como_favorita($_POST['idmensagem'], $_POST['booleano']);
+		$this->mensagem_model->marcar_como_favorita($this->input->post('idmensagem'), $this->input->post('booleano'));
 	}
 
-	function marcar_como_lixo($idmensagem, $booleano){
+	function marcar_como_lixo($idmensagem = 0, $booleano = 0){
 		$this->mensagem_model->marcar_como_lixo($idmensagem, $booleano);
 	}
 
-	function delete($idmensagem, $idmensagem_principal){
+	function delete($idmensagem = 0, $idmensagem_principal = 0){
 		$excluido = $this->mensagem_model->delete($idmensagem);
 		
 		if ($excluido){

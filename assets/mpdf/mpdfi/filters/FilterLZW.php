@@ -17,6 +17,7 @@
 //  limitations under the License.
 //
 
+#[\AllowDynamicProperties]
 class FilterLZW {
     
     var $sTable = array();

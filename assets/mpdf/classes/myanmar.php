@@ -1,6 +1,7 @@
 <?php
 
 
+#[\AllowDynamicProperties]
 class MYANMAR {
 
 /* FROM hb-ot-shape-complex-indic-private.hh */

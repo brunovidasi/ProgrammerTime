@@ -30,6 +30,7 @@ if ( ! function_exists('xml_parser_create'))
  * @author		ExpressionEngine Dev Team
  * @link		http://codeigniter.com/user_guide/libraries/xmlrpc.html
  */
+#[\AllowDynamicProperties]
 class CI_Xmlrpc {
 
 	var $debug			= FALSE;	// Debugging on or off
@@ -350,6 +351,7 @@ class CI_Xmlrpc {
  * @author		ExpressionEngine Dev Team
  * @link		http://codeigniter.com/user_guide/libraries/xmlrpc.html
  */
+#[\AllowDynamicProperties]
 class XML_RPC_Client extends CI_Xmlrpc
 {
 	var $path			= '';
@@ -428,6 +430,7 @@ class XML_RPC_Client extends CI_Xmlrpc
  * @author		ExpressionEngine Dev Team
  * @link		http://codeigniter.com/user_guide/libraries/xmlrpc.html
  */
+#[\AllowDynamicProperties]
 class XML_RPC_Response
 {
 	var $val = 0;
@@ -606,6 +609,7 @@ class XML_RPC_Response
  * @author		ExpressionEngine Dev Team
  * @link		http://codeigniter.com/user_guide/libraries/xmlrpc.html
  */
+#[\AllowDynamicProperties]
 class XML_RPC_Message extends CI_Xmlrpc
 {
 	var $payload;
@@ -1010,7 +1014,7 @@ class XML_RPC_Message extends CI_Xmlrpc
 					}
 					else
 					{
-						$this->xh[$the_parser]['value'] = (double)$this->xh[$the_parser]['ac'];
+						$this->xh[$the_parser]['value'] = (float)$this->xh[$the_parser]['ac'];
 					}
 				}
 				else
@@ -1203,6 +1207,7 @@ class XML_RPC_Message extends CI_Xmlrpc
  * @author		ExpressionEngine Dev Team
  * @link		http://codeigniter.com/user_guide/libraries/xmlrpc.html
  */
+#[\AllowDynamicProperties]
 class XML_RPC_Values extends CI_Xmlrpc
 {
 	var $me		= array();

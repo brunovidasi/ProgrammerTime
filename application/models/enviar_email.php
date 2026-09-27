@@ -116,7 +116,7 @@ class Enviar_email extends CI_Model {
 		$email->de_email 	= $email_gerente;
 		$email->para_email 	= $email_cliente;
 		$email->copia 		= $email_gerente;
-		$email->data 		= date('Y-d-m H:i:s');
+		$email->data 		= date('Y-m-d H:i:s');
 		
 		if ($this->db->insert("projeto_email", $email)){
 		

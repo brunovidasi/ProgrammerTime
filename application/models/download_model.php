@@ -1,6 +1,6 @@
 <?php  
 
-class Download extends CI_Model {
+class Download_model extends CI_Model {
 
     function __construct() {
         parent::__construct();

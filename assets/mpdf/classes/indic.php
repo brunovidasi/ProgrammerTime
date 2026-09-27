@@ -1,6 +1,7 @@
 <?php
 
 
+#[\AllowDynamicProperties]
 class INDIC {
 
 /* FROM hb-ot-shape-complex-indic-private.hh */

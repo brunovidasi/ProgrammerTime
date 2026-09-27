@@ -137,13 +137,13 @@ class Usuario extends CI_Controller {
 					redirect('/usuario/');
 				}
 			}
-			$this->session->set_flashdata('mensagem_erro', lang('msg_usuario_cadastro_sucesso'));
+			$this->session->set_flashdata('mensagem_erro', lang('msg_usuario_cadastro_erro'));
 			redirect('/usuario/cadastrar/');
 		}
 		$this->cadastrar();		
 	}
 	
-	public function update($id){
+	public function update($id = 0){
 		$id = (int) $id;
 		if($id > 0){
 			if($this->valida_form('update', $id)){
@@ -163,7 +163,9 @@ class Usuario extends CI_Controller {
 				redirect('/usuario/editar/'.$id);
 			}
 			$this->editar($id);
+			return;
 		}
+		redirect('/usuario/');
 	}
 	
 	public function muda_status($status = 'ativo', $id = 0){
@@ -247,7 +249,7 @@ class Usuario extends CI_Controller {
 		redirect('/dashboard/');
 	}
 	
-	public function confirma_email($senha){
+	public function confirma_email($senha = ''){
 		$id = (int) $this->usuario_model->get_senha_email($senha);
 		
 		if(!empty($id) && $id > 0){

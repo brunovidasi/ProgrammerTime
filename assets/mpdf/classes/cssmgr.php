@@ -1,5 +1,6 @@
 <?php
 
+#[\AllowDynamicProperties]
 class cssmgr {
 
 var $mpdf = null;

@@ -30,6 +30,7 @@ if (!defined("_SVG_CLASSES")) { define("_SVG_CLASSES", false); }
 // NB UNITS - Works in pixels as main units - converting to PDF units when outputing to PDF string
 // and on returning size
 
+#[\AllowDynamicProperties]
 class SVG {
 
 	var $svg_font;		//	array - holds content of SVG fonts defined in image	// mPDF 6

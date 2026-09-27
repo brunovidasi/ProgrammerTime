@@ -34,6 +34,8 @@ class Relatorio_model extends CI_Model {
 	}
 	
 	function get_relatorio($idrelatorio){
+		$idrelatorio = (int) $idrelatorio;
+
 		$sql = "SELECT * FROM relatorio WHERE idrelatorio='{$idrelatorio}' LIMIT 1";
 		
 		return $this->db->query($sql);
@@ -58,6 +60,9 @@ class Relatorio_model extends CI_Model {
 	}
 	
 	function get_relatorios_lista($maximo, $inicio){
+		$maximo = (int) $maximo;
+		$inicio = (int) $inicio;
+
 		$sql = "SELECT	
 					R.*, 
 					P.nome as nomeprojeto,
@@ -78,6 +83,8 @@ class Relatorio_model extends CI_Model {
 	}
 	
 	function get_informacoes($idprojeto){
+		$idprojeto = (int) $idprojeto;
+
 		$sql = "SELECT 	
 					P.*, 
 					PT.tipo as TipoProjeto, 
@@ -135,6 +142,7 @@ class Relatorio_model extends CI_Model {
 		
 		foreach($financeiros->result() as $financeiro){
 			
+			$pago = $financeiro->status;
 			if($financeiro->status == 'nao_pago')
 				$pago = 'Não Pago';
 			elseif($financeiro->status == 'cobrado')
@@ -157,6 +165,8 @@ class Relatorio_model extends CI_Model {
 		}
 		
 		$informacoes = $this->relatorio_model->get_informacoes($idprojeto);
+
+		$idcliente = $idresponsavel = $dados_tipo = $responsavel_nome = $responsavel_email = $cliente_nome = $cliente_email = '';
 
 		foreach($informacoes->result() as $inf){
 			$idcliente = $inf->idcliente;
@@ -248,26 +258,6 @@ class Relatorio_model extends CI_Model {
 		return $relatorio;
 	}
 	
-	function gera_relatorio_pdf($html="", $titulo=""){
-		
-		if(empty($html)){
-			$html 	= $this->input->post('relatorio');
-		}
-		
-		if(empty($titulo)){
-			$titulo = $this->input->post('titulo');
-		}
-		
-		require_once("assets/pdf/dompdf_config.inc.php");
-		
-		$dompdf = new DOMPDF();
-		$dompdf->load_html($html);
-		$dompdf->set_paper('a4', 'portrait');
-		$dompdf->render();
-		$dompdf->stream($titulo.".pdf");
-	
-	}
-	
 	function gera_relatorio_mpdf($html="", $titulo=""){
 		
 		if(empty($html)){
@@ -278,15 +268,24 @@ class Relatorio_model extends CI_Model {
 			$titulo = $this->input->post('titulo');
 		}
 		
-		include("assets/mpdf/mpdf.php");
+		include_once(FCPATH."assets/mpdf/mpdf.php");
 		
-		$stylesheet = file_get_contents('assets/mpdf/mpdf_style.css');
+		$stylesheet = file_get_contents(FCPATH.'assets/mpdf/mpdf_style.css');
 
+		// Anything echoed while building (e.g. PHP notices in development mode)
+		// would corrupt the PDF or make mPDF abort, so discard it.
+		ob_start();
 		$mpdf = new mPDF();
 		$mpdf->Bookmark('Start of the document');
 		$mpdf->WriteHTML($stylesheet,1);
-		$mpdf->WriteHTML($html, 2);
-		$mpdf->Output();
+		$mpdf->WriteHTML((string) $html, 2);
+		$pdf = $mpdf->Output('', 'S');
+		while (ob_get_level() > 0) ob_end_clean();
+
+		header('Content-Type: application/pdf');
+		header('Content-Disposition: inline; filename="relatorio.pdf"');
+		header('Content-Length: '.strlen($pdf));
+		echo $pdf;
 		// $mpdf->Output($titulo.'.pdf', 'D');
 
 		exit;

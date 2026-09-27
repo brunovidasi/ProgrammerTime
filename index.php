@@ -19,7 +19,7 @@
 
 	if(defined('ENVIRONMENT')){
 		switch (ENVIRONMENT){
-			case 'development': error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT); break;
+			case 'development': error_reporting(E_ALL & ~E_DEPRECATED); break;
 			case 'testing':
 			case 'production': error_reporting(0); break;
 			default: exit('O ambiente de aplicação não está definido corretamente.');

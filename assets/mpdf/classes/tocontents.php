@@ -1,5 +1,6 @@
 <?php
 
+#[\AllowDynamicProperties]
 class tocontents {
 
 var $mpdf = null;

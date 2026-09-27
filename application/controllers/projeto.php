@@ -183,7 +183,7 @@ class Projeto extends CI_Controller {
 		$this->load->view('includes/interna', $dados);
 	}
 	
-	public function editar($idprojeto){
+	public function editar($idprojeto = null){
 
 		if(empty($idprojeto)){
 			$this->session->set_flashdata('mensagem_atencao', lang('msg_projeto_inexistente'));
@@ -196,8 +196,14 @@ class Projeto extends CI_Controller {
 		$crop->largura 	= "400";
 		$crop->altura 	= "300";
 
+		$projeto = $this->projeto_model->get_projeto($idprojeto);
+		if($projeto->num_rows() == 0){
+			$this->session->set_flashdata('mensagem_atencao', lang('msg_projeto_inexistente'));
+			redirect('/projeto/');
+		}
+
 		$dados['crop_projeto'] 	= $crop;
-		$dados['projeto']		= $this->projeto_model->get_projeto($idprojeto)->row();
+		$dados['projeto']		= $projeto->row();
 		$dados['tipos']			= $this->projeto_model->get_tipos();
 		$dados['usuarios']		= $this->usuario_model->get_usuarios_ativos();
 		$dados['clientes']		= $this->cliente_model->get_clientes();
@@ -224,7 +230,7 @@ class Projeto extends CI_Controller {
 		$this->cadastrar();
     }
 	
-	public function update($id){
+	public function update($id = null){
 
         if(!empty($id)){
 			if($this->valida_form('update', $id)){
@@ -244,7 +250,7 @@ class Projeto extends CI_Controller {
 	    redirect('/projeto/');
 	}
 	
-	public function observacao($id){
+	public function observacao($id = null){
 
         if(!empty($id)){
         	if($this->valida_obs()){
@@ -259,9 +265,10 @@ class Projeto extends CI_Controller {
 				redirect('/projeto/visualizar/'.$id);
 			}
 	    }
+	    redirect('/projeto/');
 	}
 	
-	public function delete($idprojeto){
+	public function delete($idprojeto = 0){
 		$excluido = $this->projeto_model->delete($idprojeto);
 		
 		if($excluido)

@@ -24,6 +24,7 @@
  * @author		ExpressionEngine Dev Team
  * @link		http://codeigniter.com/user_guide/libraries/exceptions.html
  */
+#[\AllowDynamicProperties]
 class CI_Exceptions {
 	var $action;
 	var $severity;
@@ -57,7 +58,7 @@ class CI_Exceptions {
 						E_USER_ERROR		=>	'User Error',
 						E_USER_WARNING		=>	'User Warning',
 						E_USER_NOTICE		=>	'User Notice',
-						E_STRICT			=>	'Runtime Notice'
+						2048				=>	'Runtime Notice'
 					);
 
 

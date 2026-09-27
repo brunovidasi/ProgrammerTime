@@ -13,8 +13,8 @@ class Tarefa_model extends CI_Model {
 
 			$dados->idprojeto					= (int) $this->input->post('idprojeto', TRUE);
 			$dados->idfase						= (int) $this->input->post('idfase', TRUE);
-			$dados->nome						= strsql($this->input->post('nome', TRUE));
-			$dados->descricao					= strsql($this->input->post('descricao'));
+			$dados->nome						= $this->input->post('nome', TRUE);
+			$dados->descricao					= $this->input->post('descricao');
 			$dados->horas 						= (int) $this->input->post('horas', TRUE);
 			$dados->data_prazo 					= fdata($this->input->post('data', TRUE), "-") . " 00:00:00";
 			$dados->idusuario_responsavel		= (int) $this->input->post('idusuario', TRUE);
@@ -103,6 +103,8 @@ class Tarefa_model extends CI_Model {
 				";
 		
 		$tarefa = $this->db->query($sql)->row();
+		if(empty($tarefa)) return FALSE;
+
 		$tarefa->horas_previstas = $tarefa->horas . ':00';
 		$tarefa->hr_previstas = $tarefa->horas;
 
@@ -140,12 +142,14 @@ class Tarefa_model extends CI_Model {
 	}
 
 	function get_tarefas($idprojeto = 0, $idusuario = 0, $order = "ASC", $maximo = 0, $inicio = 0, $status = "", $resultado = 'resultado', $todos_status_menos = ""){
+		$todos_status_menos = $this->db->escape_str((string) $todos_status_menos);
+
 
 		$limit = "";
 		$where = " WHERE PT.idtarefa > 0 ";
 
 		$status = strsql($status);
-		$order 	= strsql($order);
+		$order 	= (strtoupper((string) $order) == 'DESC') ? 'DESC' : 'ASC';
 		$maximo = (int) $maximo;
 		$inicio = (int) $inicio;
 

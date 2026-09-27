@@ -24,6 +24,7 @@
  * @author		ExpressionEngine Dev Team
  * @link		http://codeigniter.com/user_guide/general/errors.html
  */
+#[\AllowDynamicProperties]
 class CI_Log {
 
 	protected $_log_path;

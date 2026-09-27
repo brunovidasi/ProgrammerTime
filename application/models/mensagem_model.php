@@ -28,6 +28,8 @@ class Mensagem_model extends CI_Model {
 	}
 
 	function get_mensagem($idmensagem){
+		$idmensagem = (int) $idmensagem;
+
 		$sql = "SELECT 
 					m.*,
 					u.nome,
@@ -47,6 +49,8 @@ class Mensagem_model extends CI_Model {
 	}
 
 	function get_mensagens_associadas($idmensagem){
+		$idmensagem = (int) $idmensagem;
+
 		$idmensagem = (int) $idmensagem;
 		$idusuario = $this->session->userdata('id');
 
@@ -168,6 +172,9 @@ class Mensagem_model extends CI_Model {
 	}
 
 	function marcar_como_lida($idmensagem, $booleano){
+		$idmensagem = (int) $idmensagem;
+		$booleano = filter_var($booleano, FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
+
 		$sql = "UPDATE
 					mensagem
 				SET 
@@ -180,6 +187,9 @@ class Mensagem_model extends CI_Model {
 	}
 
 	function marcar_como_favorita($idmensagem, $booleano){
+		$idmensagem = (int) $idmensagem;
+		$booleano = filter_var($booleano, FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
+
 		$sql = "UPDATE
 					mensagem
 				SET 
@@ -192,6 +202,9 @@ class Mensagem_model extends CI_Model {
 	}
 
 	function marcar_como_rascunho($idmensagem, $booleano){
+		$idmensagem = (int) $idmensagem;
+		$booleano = filter_var($booleano, FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
+
 		$sql = "UPDATE
 					mensagem
 				SET 
@@ -204,6 +217,9 @@ class Mensagem_model extends CI_Model {
 	}
 
 	function marcar_como_lixo($idmensagem, $booleano){
+		$idmensagem = (int) $idmensagem;
+		$booleano = filter_var($booleano, FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
+
 		$sql = "UPDATE
 					mensagem
 				SET 

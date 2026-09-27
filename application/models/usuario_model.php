@@ -88,6 +88,9 @@ class Usuario_model extends CI_Model {
 	}
 	
 	function get_projetos($id, $limite = null){
+		$id = (int) $id;
+		$limite = (int) $limite;
+
 		$sql = "SELECT 	
 					P.*, 
 					C.nome as clientenome, 
@@ -111,6 +114,9 @@ class Usuario_model extends CI_Model {
 	}
 	
 	function get_etapas($id, $limite = null){
+		$id = (int) $id;
+		$limite = (int) $limite;
+
 		$sql = "SELECT 	
 					PE.*, 
 					P.prioridade as prioridade, 
@@ -133,6 +139,8 @@ class Usuario_model extends CI_Model {
 	}
 	
 	function get_usuario($id){
+		$id = (int) $id;
+
 		$sql = "SELECT 
 					U.*, UNA.cargo as cargo 
 				FROM 
@@ -204,6 +212,9 @@ class Usuario_model extends CI_Model {
 	}
 	
 	function get_usuarios_lista($maximo, $inicio, $termo = ""){
+		$maximo = (int) $maximo;
+		$inicio = (int) $inicio;
+
 
 		$termo = strsql($termo);
 		
@@ -238,12 +249,16 @@ class Usuario_model extends CI_Model {
 	}
 	
 	function get_usuario_login($login){
+		$login = $this->db->escape_str((string) $login);
+
 		$sql = "SELECT * FROM usuario WHERE login = '{$login}'";
 		
 		return $this->db->query($sql);
 	}
 
 	function get_usuario_email($email){
+		$email = $this->db->escape_str((string) $email);
+
 		$sql = "SELECT * FROM usuario WHERE email = '{$email}'";
 		
 		return $this->db->query($sql);
@@ -296,6 +311,9 @@ class Usuario_model extends CI_Model {
 	}
 	
 	function get_senha_email($senha){
+		$senha = $this->db->escape_str((string) $senha);
+		if($senha === '') return 0;
+
 		$query = $this->db->query("SELECT idusuario FROM usuario WHERE email_senha = '{$senha}'");
 
 		if($query->num_rows() > 0){
@@ -408,6 +426,8 @@ class Usuario_model extends CI_Model {
 	}
 	
 	function retorna_imagens($idusuario){
+		$idusuario = (int) $idusuario;
+
 
 		// MUDAR PARA NOME DO MÉTODO PARA GET_IMAGEM
 		$sql = "SELECT imagem FROM usuario WHERE idusuario = {$idusuario}";
@@ -421,6 +441,8 @@ class Usuario_model extends CI_Model {
 	}
 
 	function get_horas_trabalhadas($idusuario){
+		$idusuario = (int) $idusuario;
+
 
 		$etapas = $this->db->query("SELECT * FROM projeto_tarefa_hora WHERE idusuario = '{$idusuario}' ORDER BY data DESC, inicio DESC, idetapa DESC");
 
@@ -436,6 +458,8 @@ class Usuario_model extends CI_Model {
 	}
 	
 	function get_projetos_envolvido($idusuario){
+		$idusuario = (int) $idusuario;
+
 		$projetos_envolvidos = $this->db->query("SELECT * FROM projeto_tarefa_hora WHERE idusuario = '{$idusuario}' ORDER BY data DESC, inicio DESC, idetapa DESC");
 		
 		$ids_projetos = array();

@@ -34,10 +34,15 @@ class Json extends CI_Controller{
 
 				$imagem['image'] = $usuario->imagem;
 				$imagem['link'] = base_url('assets/images/usuarios/'.$usuario->imagem);
-				$imagem['path'] = getcwd().'/assets/images/usuario/'.$usuario->imagem;
+				$imagem['path'] = FCPATH.'assets/images/usuarios/'.basename((string) $usuario->imagem);
 				$imagem['extension'] = pathinfo($imagem['link'], PATHINFO_EXTENSION);
-				list($imagem['width'], $imagem['height'], $imagem['type'], $imagem['attr']) = getimagesize($imagem['link']);
-				$imagem['base64'] = base64_encode(file_get_contents($imagem['link']));
+				$imagem['width'] = $imagem['height'] = $imagem['type'] = $imagem['attr'] = NULL;
+				$imagem['base64'] = NULL;
+				if(is_file($imagem['path'])){
+					$tamanho = getimagesize($imagem['path']);
+					if($tamanho) list($imagem['width'], $imagem['height'], $imagem['type'], $imagem['attr']) = $tamanho;
+					$imagem['base64'] = base64_encode(file_get_contents($imagem['path']));
+				}
 
 
 				$asterisco = '';

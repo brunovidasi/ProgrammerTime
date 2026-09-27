@@ -1,5 +1,6 @@
 <?php
 
+#[\AllowDynamicProperties]
 class grad {
 
 var $mpdf = null;

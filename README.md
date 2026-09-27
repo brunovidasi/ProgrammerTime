@@ -7,7 +7,7 @@ TCC (undergraduate thesis) project by Bruno Vieira ([@brunovidasi](https://githu
 and Filipe Moreira.
 
 Built on **CodeIgniter 2.2.0** (PHP) with a **MySQL** database, Bootstrap 3 /
-AdminLTE-style UI, and PDF export via bundled **mPDF** and **dompdf** copies.
+AdminLTE-style UI, and PDF export via a bundled copy of **mPDF**.
 
 ## Status
 
@@ -51,7 +51,18 @@ PHP 8. It has been fixed and modernized:
   raw `UPDATE` statements by concatenating the table name, column name, and
   value straight from POST data, with no auth check. Rewrote them to
   validate table/column against a fixed whitelist and bind the value via a
-  prepared statement.
+  prepared statement. They have since been moved into an authenticated
+  CodeIgniter controller (`application/controllers/ajax.php`) with
+  per-table permission checks.
+- PHP 8.2–8.4 compatibility pass: `#[\AllowDynamicProperties]` on the
+  CodeIgniter and mPDF classes, `E_STRICT`/`(boolean)`/`(double)`/`${}`
+  deprecations removed, PHP 8 `TypeError`/`ArgumentCountError` crashes
+  fixed (missing task, malformed dates, missing URL segments, upload crop
+  maths), mPDF warnings that corrupted PDF output (incl. the PHP 8.3
+  `unserialize()` trailing-data warning) fixed, and CI's upload MIME
+  sniffing restored for PHP 8.1's `finfo` objects.
+- Model queries now cast/escape every interpolated value (the login form
+  was injectable), and `upload/salva_imagem` is no longer URL-callable.
 - Reconstructed `schema.sql` from the model queries, since no database dump
   existed anywhere in the project.
 
@@ -111,12 +122,9 @@ Standard CodeIgniter 2 MVC layout:
 - `application/helpers/fdata_helper.php`, `cripto_helper.php`,
   `sql_helper.php`, `gera_senha_helper.php` — app-specific helpers (date
   formatting, password hashing, escaping, password generation).
-- `assets/ajax/` — two standalone (non-CodeIgniter) PHP endpoints used for
-  inline click-to-edit fields in the UI; see Security below.
-- `assets/mpdf/`, `assets/pdf/` — vendored PDF libraries (mPDF and
-  dompdf/CPDF respectively). The app's `relatorio` feature uses mPDF; the
-  dompdf code path (`Relatorio_model::gera_relatorio_pdf()`) exists but
-  isn't wired up to any controller.
+- `application/controllers/ajax.php` — inline click-to-edit endpoints used
+  by `assets/js/atualizaAjax.js`.
+- `assets/mpdf/` — vendored mPDF, used by the `relatorio` PDF export.
 - `system/` — CodeIgniter 2.2.0 core, patched only where it broke under
   PHP 8 (see Status above); not upgraded to a newer framework version.
 - `schema.sql` — reconstructed from the model layer; not part of stock

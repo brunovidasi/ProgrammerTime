@@ -32,7 +32,7 @@ class upload extends CI_Controller {
 		
         $file_types_permitidos = array("image/gif", "image/jpeg", "image/pjpeg", "image/png", "image/x-png");
 
-        if (in_array($_FILES["foto"]["type"], $file_types_permitidos)) {
+        if (isset($_FILES["foto"]["type"]) && in_array($_FILES["foto"]["type"], $file_types_permitidos)) {
 			
             $origem_uso     = str_replace(".", "/", $dados->origem);
             $destino_uso    = str_replace(".", "/", $dados->destino);
@@ -44,7 +44,7 @@ class upload extends CI_Controller {
             if($this->upload->do_upload('foto')){
                 $dados->upload = $this->upload->data();
 
-                setcookie('ptime_img_crop', serialize($dados), time()+5);
+                setcookie('ptime_img_crop', json_encode($dados), time()+5, '/');
                 redirect('/upload/crop/');
             }
             $this->session->set_flashdata('msg_controller_erro', lang('msg_upload_erro'));
@@ -56,7 +56,16 @@ class upload extends CI_Controller {
 
     public function crop(){
 
-        $imagem = unserialize($_COOKIE["ptime_img_crop"]);
+        $imagem = isset($_COOKIE["ptime_img_crop"]) ? json_decode($_COOKIE["ptime_img_crop"]) : NULL;
+
+        if(!is_object($imagem) || empty($imagem->upload)){
+            $this->session->set_flashdata('msg_controller_erro', lang('msg_upload_erro'));
+            redirect("/upload/upload_imagem/");
+        }
+
+        $imagem->upload = (array) $imagem->upload;
+        $imagem->altura = max(1, (int) $imagem->altura);
+        $imagem->largura = max(1, (int) $imagem->largura);
 
         $this->load->library('image_lib');
 
@@ -85,6 +94,10 @@ class upload extends CI_Controller {
         $yt = $imagem->altura;
 		
         $raito = $xt / $yt;
+        $proporcao = 1;
+        $Alarg = $width;
+        $Aalt = $height;
+        $propa = 1;
 		
         $Lalt = $height;
         $Llarg = $width;
@@ -151,18 +164,20 @@ class upload extends CI_Controller {
             $origem_uso     = str_replace(".", "/", $imagem->origem);
             $destino_uso    = str_replace(".", "/", $imagem->destino);
 			
-            $xt = $imagem->largura;
-            $yt = $imagem->altura;
+            $xt = max(1, (int) $imagem->largura);
+            $yt = max(1, (int) $imagem->altura);
 			
             $dir_temp = "./{$origem_uso}";
             $dir_imag = "./{$destino_uso}";
 
-            $imagem->tipo = str_replace(",", ".", $this->input->post('tipo'));
+            $imagem->tipo = (float) str_replace(",", ".", (string) $this->input->post('tipo'));
+            if($imagem->tipo <= 0) $imagem->tipo = 1;
 			
-            $ww     = intval($imagem->w * $imagem->tipo);
-            $aax    = intval($imagem->ax * $imagem->tipo);
-            $hh     = intval($imagem->h * $imagem->tipo);
-            $aay    = intval($imagem->ay * $imagem->tipo);
+            // Empty/non-numeric strings in arithmetic throw a TypeError in PHP 8
+            $ww     = intval((float) $imagem->w * $imagem->tipo);
+            $aax    = intval((float) $imagem->ax * $imagem->tipo);
+            $hh     = intval((float) $imagem->h * $imagem->tipo);
+            $aay    = intval((float) $imagem->ay * $imagem->tipo);
 			
             $tipo_imagem = $this->input->post('tipo_imagem');
 
@@ -232,7 +247,7 @@ class upload extends CI_Controller {
         }
     }
 
-    public function salva_imagem($dir_imag, $dir_temp, $nome_arquivo){
+    private function salva_imagem($dir_imag, $dir_temp, $nome_arquivo){
 		
         $config = array('source_image' => $dir_temp . $nome_arquivo, 'new_image' => $dir_imag);
 		$this->image_lib->clear();

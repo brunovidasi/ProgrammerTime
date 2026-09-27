@@ -90,8 +90,7 @@ class Financeiro extends CI_Controller {
 				
 				if($atualizado){
 				    $this->session->set_flashdata('mensagem_sucesso', lang('msg_financeiro_editar_sucesso'));
-				    $financeiro = $this->financeiro_model->get_financeiro($id)->row();
-				    redirect('/financeiro/editar/'.$financeiro->idprojeto);
+				    redirect('/financeiro/editar/'.$id);
 				}
 
 				$this->session->set_flashdata('mensagem_erro', lang('msg_financeiro_editar_erro'));
@@ -101,9 +100,15 @@ class Financeiro extends CI_Controller {
 		$this->editar($id);
 	}
 
-	public function delete($idfinanceiro){
+	public function delete($idfinanceiro = 0){
 
 		$financeiro = $this->financeiro_model->get_financeiro($idfinanceiro)->row();
+
+		if(empty($financeiro)){
+			$this->session->set_flashdata('mensagem_atencao', lang('msg_financeiro_inexistente'));
+			redirect('/projeto/');
+		}
+
 		$excluido = $this->financeiro_model->delete($idfinanceiro);
 		
 		if($excluido)

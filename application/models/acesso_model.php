@@ -30,18 +30,24 @@ class Acesso_model extends CI_Model {
 	}
 	
 	function get_informacao($login){
+		$login = $this->db->escape_str((string) $login);
+
 		$sql = "SELECT * FROM usuario WHERE (login = '{$login}' OR email = '{$login}') LIMIT 1";
 		
 		return $this->db->query($sql);
 	}
 	
 	function get_informacao_id($id){
+		$id = (int) $id;
+
 		$sql = "SELECT * FROM usuario WHERE idusuario = '{$id}' LIMIT 1";
 		
 		return $this->db->query($sql);
 	}
 	
 	function nivel_acesso($id_nivel_acesso){
+		$id_nivel_acesso = (int) $id_nivel_acesso;
+
 		$sql = "SELECT * FROM usuario_nivel_acesso WHERE id = '{$id_nivel_acesso}'";
 		$query = $this->db->query($sql);
 		
@@ -81,12 +87,16 @@ class Acesso_model extends CI_Model {
 	}
 
 	function get_info($id = 1){
+		$id = (int) $id;
+
 		$sql = "SELECT * FROM info WHERE idinfo = '{$id}'";
 		
 		return $this->db->query($sql);
 	}
 	
 	function get_recarregar($id){
+		$id = (int) $id;
+
 		$sql = "SELECT recarregar FROM usuario WHERE idusuario = '{$id}'";
 		
 		$query = $this->db->query($sql);

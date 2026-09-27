@@ -34,7 +34,7 @@ $autoload['model'] 		= array(
 							'empresa_model',
 							'ajuda_model',
 							'enviar_email',
-							'download',
+							'download_model',
 							'acesso_model', 
 							'projeto_model', 
 							'usuario_model', 

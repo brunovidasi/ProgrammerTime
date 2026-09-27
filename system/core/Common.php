@@ -474,7 +474,7 @@ if ( ! function_exists('_exception_handler'))
 		 // For example, if you are running PHP 5 and you use version 4 style
 		 // class functions (without prefixes like "public", "private", etc.)
 		 // you'll get notices telling you that these have been deprecated.
-		if ($severity == E_STRICT)
+		if ($severity == 2048) // E_STRICT (constant deprecated in PHP 8.4)
 		{
 			return;
 		}

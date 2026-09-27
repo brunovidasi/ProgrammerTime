@@ -26,6 +26,7 @@ if (!defined('ORD_u'))
 if (!defined('ORD_tilde'))
 	define('ORD_tilde', ord('~'));
 
+#[\AllowDynamicProperties]
 class FilterASCII85 {
     
     function error($msg) {

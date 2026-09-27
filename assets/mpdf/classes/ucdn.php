@@ -4,6 +4,7 @@
 /* HarfBuzz ucdn/ucdn.c */
 /* HarfBuzz ucdn/ucdn.h */
 
+#[\AllowDynamicProperties]
 class UCDN {
 
 const SCRIPT_COMMON = 0;

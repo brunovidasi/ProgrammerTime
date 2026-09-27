@@ -86,6 +86,7 @@ if (!defined('PHP_VERSION_ID')) {
     define('PHP_VERSION_ID', ($version[0] * 10000 + $version[1] * 100 + $version[2]));
 }
 
+#[\AllowDynamicProperties]
 class mPDF
 {
 
@@ -7848,7 +7849,10 @@ function _getObjAttr($t) {
 		$v = explode("=",$v,2);
 		$sp[$v[0]] = $v[1];
 	}
-	return (unserialize($sp['objattr']));
+	$objattr = $sp['objattr'];
+	// Drop the trailing marker: PHP 8.3+ warns about extra data after the serialized value
+	if (substr($objattr, -3) === "\xbb\xa4\xac") { $objattr = substr($objattr, 0, -3); }
+	return (unserialize($objattr));
 }
 
 
@@ -14533,8 +14537,8 @@ function WriteHTML($html,$sub=0,$init=true,$close=true) {
 		if (!empty($this->internallink) ) {
 			foreach($this->internallink as $k=>$v) {
 				if (strpos($k,"#") !== false ) { continue; } //ignore
-				$ypos = $v['Y'];
-				$pagenum = $v['PAGE'];
+				$ypos = is_array($v) ? $v['Y'] : null;
+				$pagenum = is_array($v) ? $v['PAGE'] : null;
 				$sharp = "#";
 				while (array_key_exists($sharp.$k,$this->internallink)) {
 					$internallink = $this->internallink[$sharp.$k];
@@ -19441,7 +19445,7 @@ function _setListMarker($listitemtype, $listitemimage, $listitemposition) {
 
 		$objattr['height'] = $this->FontSize;
 		$objattr['vertical-align'] = 'T';
-		$objattr['text'] = $list_item_marker;
+		$objattr['text'] = '';	// symbol is drawn from 'bullet'; $list_item_marker is undefined here
 		$objattr['dir'] = (isset($this->blk[$this->blklvl]['direction']) ? $this->blk[$this->blklvl]['direction'] : 'ltr');
 		$objattr['bullet'] = $listitemtype;
 		$objattr['colorarray'] = $this->colorarray;

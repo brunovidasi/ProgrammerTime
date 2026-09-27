@@ -6,7 +6,7 @@ function nivel(campo, caminho, tabela, idCampo, nomeCampo, idnivel, idusuario, n
         $(campo).attr("src", caminho+"/images/sistema/nao.png");
         $(campo).attr('alt', 'não');
         $(campo).attr('title', 'não');
-        var pag = caminho+"/ajax/alterarNivel.php";
+        var pag = caminho.replace(/\/assets\/?$/, "")+"/ajax/alterar_nivel";
         var valorCampo = "nao";
 		
 		alertify.error(nomenivel+" não "+nomeacao+" mais.");
@@ -14,7 +14,7 @@ function nivel(campo, caminho, tabela, idCampo, nomeCampo, idnivel, idusuario, n
         $(campo).attr("src", caminho+"/images/sistema/sim.png");
 		$(campo).attr('alt', 'sim');
 		$(campo).attr('title', 'sim');
-        var pag = caminho+"/ajax/alterarNivel.php";
+        var pag = caminho.replace(/\/assets\/?$/, "")+"/ajax/alterar_nivel";
         var valorCampo = "sim";
 		
 		alertify.success(nomenivel+" agora "+nomeacao+".");
@@ -39,7 +39,7 @@ function prioridade(campo, caminho, tabela, idCampo, nomeCampo, idprojeto){
         $(campo).attr("src", caminho+"/images/sistema/estrela_preta.png");
 		$(campo).attr('alt', 'Normal');
         $(campo).attr('title', 'Normal');
-        var pag = caminho+"/ajax/alterarProjeto.php";
+        var pag = caminho.replace(/\/assets\/?$/, "")+"/ajax/alterar_projeto";
         var valorCampo = "normal";
 		alertify.success("Prioridade Normal.");
     }
@@ -47,7 +47,7 @@ function prioridade(campo, caminho, tabela, idCampo, nomeCampo, idprojeto){
         $(campo).attr("src", caminho+"/images/sistema/estrela_vermelha.png");
 		$(campo).attr('alt', 'Urgente');
         $(campo).attr('title', 'Urgente');
-        var pag = caminho+"/ajax/alterarProjeto.php";
+        var pag = caminho.replace(/\/assets\/?$/, "")+"/ajax/alterar_projeto";
         var valorCampo = "urgente";
 		alertify.error("Prioridade Urgente.");
     } 
@@ -55,7 +55,7 @@ function prioridade(campo, caminho, tabela, idCampo, nomeCampo, idprojeto){
 		$(campo).attr("src", caminho+"/images/sistema/estrela_cinza.png");
 		$(campo).attr('alt', 'Baixa');
         $(campo).attr('title', 'Baixa');
-        var pag = caminho+"/ajax/alterarProjeto.php";
+        var pag = caminho.replace(/\/assets\/?$/, "")+"/ajax/alterar_projeto";
         var valorCampo = "baixa";
 		alertify.success("Prioridade Baixa.");
     }
@@ -73,7 +73,7 @@ function prioridade(campo, caminho, tabela, idCampo, nomeCampo, idprojeto){
 function status(campo, caminho, tabela, idCampo, nomeCampo, idprojeto){
 
     var img_atual = $(campo).attr("src");
-	var pag = caminho+"/ajax/alterarProjeto.php";
+	var pag = caminho.replace(/\/assets\/?$/, "")+"/ajax/alterar_projeto";
 	
     if($(campo).attr("src") == caminho+"/images/sistema/bola_azul.png"){
         
@@ -198,7 +198,7 @@ function status(campo, caminho, tabela, idCampo, nomeCampo, idprojeto){
 function tstatus(campo, caminho, tabela, idCampo, nomeCampo, idprojeto){
 
     var img_atual = $(campo).attr("src");
-	var pag = caminho+"/ajax/alterarProjeto.php";
+	var pag = caminho.replace(/\/assets\/?$/, "")+"/ajax/alterar_projeto";
 	
     if($(campo).attr("src") == caminho+"/images/sistema/bola_azul.png"){
         

@@ -81,6 +81,8 @@ class Cliente_model extends CI_Model {
 	}
 	
 	function get_cliente($id){
+		$id = (int) $id;
+
 		$sql = "SELECT * FROM cliente WHERE idcliente = {$id} LIMIT 1";
 		
 		return $this->db->query($sql);
@@ -103,6 +105,9 @@ class Cliente_model extends CI_Model {
 	}
 
 	function get_clientes_lista($maximo, $inicio, $termo = ""){
+		$maximo = (int) $maximo;
+		$inicio = (int) $inicio;
+
 
 		$termo = strsql($termo);
 		
@@ -136,6 +141,9 @@ class Cliente_model extends CI_Model {
 	}
 	
 	function get_projetos($idcliente, $limite = ""){
+		$idcliente = (int) $idcliente;
+		$limite = (int) $limite;
+
 		$sql = "SELECT 	
 					P.*, 
 					C.nome as clientenome, 
@@ -184,6 +192,8 @@ class Cliente_model extends CI_Model {
 	}
 	
 	function get_projetos_ativos($idcliente){
+		$idcliente = (int) $idcliente;
+
 		$sql = "SELECT * FROM projeto WHERE ((idcliente = {$idcliente}) AND (status = 'desenvolvimento')) ORDER BY data_inicio DESC";
 
 		return $this->db->query($sql);

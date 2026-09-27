@@ -2,6 +2,7 @@
 
 require_once(_MPDF_PATH.'classes/ttfontsuni.php');
 
+#[\AllowDynamicProperties]
 class TTFontFile_Analysis EXTENDS TTFontFile {
 
 	// Used to get font information from files in directory

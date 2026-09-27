@@ -28,6 +28,7 @@ if(!function_exists('unicode_hex')){
 		return (sprintf("%05s", strtoupper(dechex($unicode_dec))));
 	}
 }
+#[\AllowDynamicProperties]
 class OTLdump {
 
 var $GPOSFeatures;	// mPDF 5.7.1

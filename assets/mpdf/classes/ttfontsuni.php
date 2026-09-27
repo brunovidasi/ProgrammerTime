@@ -48,6 +48,7 @@ if(!function_exists('unicode_hex')){
 }
 
 
+#[\AllowDynamicProperties]
 class TTFontFile {
 
 var $GPOSFeatures;	// mPDF 5.7.1

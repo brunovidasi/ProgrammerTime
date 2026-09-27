@@ -101,7 +101,7 @@ class Cliente extends CI_Controller {
 		$this->cadastrar();
 	}
 
-	public function update($id){
+	public function update($id = 0){
 
 		$id = (int) $id;
 
@@ -126,7 +126,7 @@ class Cliente extends CI_Controller {
 		$this->editar($id);
 	}
 
-	public function delete($idcliente){
+	public function delete($idcliente = 0){
 		$excluido = $this->cliente_model->delete($idcliente);
 		
 		if($excluido){

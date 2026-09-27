@@ -17,6 +17,7 @@
 //  limitations under the License.
 //
 
+#[\AllowDynamicProperties]
 class pdf_context {
 
 	var $file;
